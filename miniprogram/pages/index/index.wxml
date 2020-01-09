@@ -1,0 +1,43 @@
+<!--index.wxml-->
+<view class="container">
+
+  <!-- 用户 -->
+  <view class="userinfo">
+    <view 
+      open-type="getUserInfo" 
+      bindgetuserinfo="onGetUserInfo"
+      class="userinfo-avatar"
+      style="background-image: url({{avatarUrl}})"
+    ></view>
+    <view>
+      <view class="userinfo-nickname">{{username}}</view>
+    </view>
+  </view>
+
+  <!--按钮-->
+  <view class="buttoncontainer">
+    <button class='groupbutton1'>社团查找</button>
+    <button class='groupbutton2'>创建社团</button>
+  </view>
+
+  <!--社团列表-->
+  <scroll-view scroll-y="true" class="groupcontainer">
+    <view wx:for="{{grouplist}}">
+      <view class="groupinfo">
+        <view 
+           open-type="getUserInfo" 
+           bindgetuserinfo="onGetUserInfo"
+           class="userinfo-avatar"
+           style="background-image: url({{item.avatarUrl}})"
+        >
+        </view>
+        <view>
+        <view class="groupname">{{item.name}}</view>
+        <view class="groupsum">{{item.sum}}</view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+
+</view>
