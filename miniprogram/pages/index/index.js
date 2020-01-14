@@ -38,7 +38,11 @@ Page({
           avatarUrl: res.userInfo.avatarUrl,
           userInfo: res.userInfo
         })
+        console.log('jjjjj')
         console.log(res)
+      },
+      fail:res=>{
+        console.log(res.errMsg);
       }
     })
     
@@ -49,14 +53,21 @@ Page({
         test:'test'
       },
       success:res=>{
-        console.log(res.result)
+        console.log(res.result.openid)
       }
     })
 
     //加载社团信息
-    this.setData({
-      })
   },
+
+  test(e){
+    console.log(e.detail.errMsg)
+    console.log(e.detail.iv)
+    console.log(e.detail.encryptedData)
+  },
+
+
+
   onGetUserInfo: function(e) {
     if (!this.logged && e.detail.userInfo) {
       this.setData({
@@ -138,4 +149,7 @@ Page({
     })
   },
 
+  toMyGroup(e){
+    
+  }
 })

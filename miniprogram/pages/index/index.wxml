@@ -16,7 +16,7 @@
 
   <!--按钮-->
   <view class="buttoncontainer">
-    <button class='groupbutton1'>社团查找</button>
+    <button class='groupbutton1' open-type="getPhoneNumber" bindgetphonenumber="test">社团查找</button>
     <button class='groupbutton2'>创建社团</button>
   </view>
 
@@ -32,7 +32,7 @@
         >
         </view>
         <view>
-        <view class="groupname">{{item.name}}</view>
+        <view class="groupname" bindtap='toMyGroup'>{{item.name}}</view>
         <view class="groupsum">{{item.sum}}</view>
         </view>
       </view>
