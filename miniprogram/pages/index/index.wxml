@@ -10,19 +10,26 @@
       style="background-image: url({{avatarUrl}})"
     ></view>
     <view>
-      <view class="userinfo-nickname">{{username}}</view>
-    </view>
+      <button class="userinfo-nickname"
+      hover-class="userinfo-nickname-h"
+      wx:if="{{!authorized}}" 
+     open-type="getUserInfo"
+     bindgetuserinfo="authorize">点击授权</button>
+      <view class="userinfo-nickname"
+            wx:if="{{authorized}}">{{username}}</view>
+      </view>
   </view>
 
   <!--按钮-->
   <view class="buttoncontainer">
-    <button class='groupbutton1' open-type="getPhoneNumber" bindgetphonenumber="test">社团查找</button>
-    <button class='groupbutton2'>创建社团</button>
+    <button class='groupbutton1' bindtap="groupSearch">群查找</button>
+    <button class='groupbutton2' bindtap='groupCreate'>创建群</button>
   </view>
 
   <!--社团列表-->
   <scroll-view scroll-y="true" class="groupcontainer">
-    <view wx:for="{{grouplist}}">
+  <view wx:if='{{noGroup}}' style="display:flex;justify-content:center;">尚未添加任何群</view>
+    <view wx:if='{{!noGroup}}' wx:for="{{grouplist}}" data-index='{{index}}' wx:key="*this" bindtap='toMyGroup'>
       <view class="groupinfo">
         <view 
            open-type="getUserInfo" 
@@ -31,13 +38,87 @@
            style="background-image: url({{item.avatarUrl}})"
         >
         </view>
-        <view>
-        <view class="groupname" bindtap='toMyGroup'>{{item.name}}</view>
-        <view class="groupsum">{{item.sum}}</view>
+          <view  bindtap='toMyGroup'>
+              <view class="line1">
+                <view class="groupname">{{item.name}}</view>
+                <view class="gnum">{{item.num}}人</view>
+              </view>
+          <view class="groupsum">{{item.sum}}</view>
         </view>
       </view>
     </view>
   </scroll-view>
+</view>
 
+<!--群搜索弹窗-->
+<view class="zan-dialog {{ tapsearch ? 'zan-dialog--show' : '' }}">
+  <view class="zan-dialog__mask" bindtap="toggleSearch" />
+  <view class="zan-dialog__container">
+  <!--弹窗内容-->
+    <view>
+        <!--搜索框-->
+        <view class="weui-search-bar">
+                <view class="weui-search-bar__form">
+                    <view class="weui-search-bar__box">
+                        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                        <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+                        <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                            <icon type="clear" size="14"></icon>
+                        </view>
+                    </view>
+                    <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                        <icon class="weui-icon-search" type="search" size="14"></icon>
+                        <view class="weui-search-bar__text">搜索</view>
+                    </label>
+                </view>
+                <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+        </view>
+        <!--搜索信息-->
+        <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
+                <view wx:for="{{grouplist}}">
+                  <view class="groupinfo">
+                      <view 
+                        open-type="getUserInfo" 
+                        bindgetuserinfo="onGetUserInfo"
+                        class="userinfo-avatar"
+                        style="background-image: url({{item.avatarUrl}})"
+                      >
+                      </view>
+                      <view  bindtap='toMyGroup'>
+                      <view class="groupname">{{inputVal}}</view>
+                      <view class="groupsum">{{item.sum}}</view>
+                      </view>
+                  </view>
+                </view>
+        </view>
+    </view>
+  </view>
+</view>
 
+<!--群创建弹窗-->
+<view class="zan-dialog {{ tapcreate ? 'zan-dialog--show' : '' }}">
+  <view class="zan-dialog__mask" bindtap="toggleCreate" />
+  <view class="zan-dialog__container">
+      <form bindsubmit='submitgroup'>
+            <image class="img" src="../../images/user-unlogin.png"/>
+            <view
+             style="display:flex;justify-content:center;margin:10rpx auto;width:200rpx"
+             hover-class="uploadgroup"
+             bindtap="doUpload">上传群头像</view>
+          <!--单输入行-->
+            <view class="inputline">
+              <view>群名：</view>
+              <input name='gname'></input>
+            </view>
+            <view class="inputline">
+              <view>简介：</view>
+              <input name='gintro'></input>
+            </view>
+            <view class="inputline">
+              <view>资金：</view>
+              <input type="number" name='fund'></input>
+            </view>
+            <button form-type="submit">提交</button>
+        </form>
+  </view>
 </view>

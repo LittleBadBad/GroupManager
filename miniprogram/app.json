@@ -1,12 +1,13 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/userConsole/userConsole",
-    "pages/storageConsole/storageConsole",
-    "pages/databaseGuide/databaseGuide",
-    "pages/addFunction/addFunction",
-    "pages/deployFunctions/deployFunctions",
-    "pages/chooseLib/chooseLib"
+    "pages/upload/upload",
+    "pages/group/group",
+    "pages/members/groupMember/groupMember",
+    "pages/members/divmember/divmember",
+    "pages/members/division/division",
+    "pages/me/me",
+    "pages/info/info"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -14,6 +15,25 @@
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "小坏坏",
     "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "我的群",
+      "iconPath":"../miniprogram/images/icon-index.jpg",
+      "selectedIconPath":"../miniprogram/images/icon-index-selected.jpg"
+    },{
+      "pagePath": "pages/info/info",
+      "text":"消息",
+      "iconPath":"../miniprogram/images/icon-info.jpg",
+      "selectedIconPath":"../miniprogram/images/icon-info-selected.jpg"
+    },{
+      "pagePath": "pages/me/me",
+      "text": "个人",
+      "iconPath":"../miniprogram/images/icon-me.jpg",
+      "selectedIconPath":"../miniprogram/images/icon-me-selected.jpg"
+    }
+  ]
   },
   "sitemapLocation": "sitemap.json"
 }

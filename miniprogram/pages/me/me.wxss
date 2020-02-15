@@ -1,0 +1,59 @@
+page{
+  background: #f6f6f6;
+}
+
+.infocontainer{
+  height:350rpx;
+  background: orange;
+  margin-bottom: 20rpx;
+  background-size:cover
+}
+
+.userinfo-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  margin: 2rpx solid grey;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: white;
+}
+
+.userinfo-name{
+  text-align:center;
+  color:white;
+  text-shadow:6rpx 2rpx 6rpx #000
+}
+
+.infocard{
+  font-size: 40rpx;
+  height:120rpx;
+  background: white;
+  display: flex;
+  align-items: center;
+  border-bottom: 4rpx solid rgb(0,0,0,0.1);
+  border-top: 4rpx solid rgb(0,0,0,0.1);
+  margin-bottom: 10rpx;
+}
+
+.authbtn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  height: 15%;
+  padding-bottom: 0;
+  background: transparent;
+  font-size: 30rpx;
+}
+
+.authbtn::after{
+  border:none
+}
+
+.auth-hover{
+  text-shadow:0 0 0
+}
+
+.card-hover{
+  background: rgb(0,0,0,0.1);
+}

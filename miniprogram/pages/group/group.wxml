@@ -1,0 +1,16 @@
+<view class='group-dismiss'><text style="font-size:24rpx;color:rgba(0, 0, 0, 0.5)" wx:if="{{!ischairman}}">解散</text></view>
+<view 
+  open-type="getUserInfo" 
+  bindgetuserinfo="onGetUserInfo"
+  class="groupinfo-avatar"
+  style="background-image: url({{avatarUrl}})"
+></view>
+<view class='groupsum'>群简介：{{}}</view>
+<!--四大模块包含容器-->
+<view class="container">
+  <view class='model'>成员</view>
+  <view class='model'>活动</view>
+  <view class='model'>设备</view>
+  <view class='model'>资金</view>
+</view>
+

@@ -1,0 +1,20 @@
+<view class="btncontainer">
+  <view class="buttonview"
+    hover-class="btclicked">副部权限</view>
+  <view class="buttonview"
+    hover-class="btclicked">换届</view>
+  <view class="buttonview"
+    hover-class="btclicked">招募部员</view>
+</view>
+<view class='memberscontainer'>
+  <view wx:for='{{divmember}}' data-index="{{index}}">
+    <view class="member">
+      <image class="memberavatar" src='{{item.avatar}}'></image>
+        <view style="padding-left:20rpx">
+          <view class="memtext">{{item.name}}{{index==0 ? "(我)" : ''}}</view>
+          <!--句内引号"，句外引号'-->
+          <view class="memtext" style="color:grey;font-size:24rpx">{{item.status}}</view>
+        </view>
+    </view>
+  </view>
+</view>

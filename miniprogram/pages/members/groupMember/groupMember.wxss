@@ -1,0 +1,191 @@
+/* miniprogram/pages/members/groupMember.wxss */
+page{
+  background:#f6f6f6;
+}
+
+.notice{
+  margin-top: 20rpx;
+  margin-right:40rpx;
+  margin-left: auto;
+  border-bottom:2rpx solid rgb(0,0,0,0.1);
+  font-size:24rpx;
+  width:48rpx
+}
+
+.buttoncontainer{
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 50rpx;
+  margin-top: 40rpx;
+}
+
+.buttonview{
+  padding:10rpx 5rpx;
+  border-radius: 10rpx;
+  /*边框记得加 solid/dashed/dotted */
+  border: 2rpx solid rgb(0,0,0,0.1);
+  background: white;
+  font-size: 24rpx;
+  margin-right: 20rpx;
+}
+
+.btclicked{
+  background: rgb(0,0,0,0.1);
+}
+
+.memberscontainer{
+  margin:20rpx auto;
+  height: 750rpx;
+  width: 700rpx;
+  background: #f6f6f6;
+  border: rgb(0,0,0,0.1) solid 4rpx;
+}
+
+.member{
+  padding:20rpx 10rpx;/*padding和内部avatar控制组件高度*/
+  background: white;
+  border-bottom: rgb(0,0,0,0.1) solid 2rpx;
+  display:flex;
+  align-items: center;
+  /* margin-bottom: 8rpx; */
+}
+
+.memberavatar{
+  margin-left: 10rpx;
+  width:100rpx;
+  height:100rpx;
+  border-radius: 50%;
+}
+
+.memtext{
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+}
+
+/*悬浮窗CSS*/
+.zan-dialog__mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+}
+
+.zan-dialog__container {
+  position: fixed;
+  bottom: 400rpx;
+  width: 650rpx;
+  height: 600rpx;
+  left: 50rpx;
+  background: #f6f6f6;
+  transform: translateY(300%);/*不点击时在300%处隐藏，点击后0处出现*/
+  transition: all 0.4s ease;/*出现和消失均用时0.4s*/
+  z-index: 12;
+  border-radius: 20rpx;
+  box-shadow: 0px 3px 3px 2px gainsboro;
+}
+.zan-dialog--show .zan-dialog__container {
+  transform: translateY(0);
+}
+.zan-dialog--show .zan-dialog__mask {
+  display: block;
+}
+
+.remove-block{
+  height: 42rpx;
+  width: 60rpx;
+  margin-top: 24rpx;
+  margin-right: 24rpx;
+  margin-left: auto;
+}
+
+.remove-text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24rpx;
+  border: rgb(0,0,0,0.3) solid 2rpx;
+  border-radius: 10%;
+  color: rgb(0,0,0,0.5);
+}
+
+.infobar{
+  background: white;
+  border:#f6f6f6 solid 2rpx;
+  height:80rpx;
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  padding-top: 10rpx;
+  padding-left: 40rpx;
+}
+
+.authview{
+height:850rpx;
+bottom:200rpx;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.authcontainer{
+  width: 630rpx;
+  height: 750rpx;
+  background: #f6f6f6;
+  border:rgb(0,0,0,0.1) solid 2rpx;
+}
+
+.status{
+  position: relative;
+  z-index: 2;
+  border-top:rgb(0,0,0,0.1) solid 2rpx;
+  border-bottom:rgb(0,0,0,0.1) solid 2rpx;
+  height: 100rpx;
+  background: white;
+  margin-bottom:4rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 20rpx;
+}
+
+.auth{
+  z-index: 1;
+  width: 540rpx;
+  height: 80rpx;
+  background: white;
+  border:rgb(0,0,0,0.1) solid 2rpx;
+  margin-bottom:4rpx;
+  margin-left: 20rpx;
+  padding-left: 20rpx;
+  display: flex;
+  align-items: center;
+  transition: all 0.5s ease;
+}
+
+.divcontainer{
+  margin:10rpx auto;
+  height: 200rpx;
+  width: 700rpx;
+  border:2rpx solid rgb(0,0,0,0.1);
+}
+
+.division{
+  height: 200rpx;
+  background: white;
+  border-bottom: 2rpx solid rgb(0,0,0,0.1);
+}
+
+.division-hover{
+  background: rgb(0,0,0,0.1);
+}
+
+.divtext{
+  display:flex;
+  align-items:center;
+  padding-left: 20rpx;
+}

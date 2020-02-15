@@ -2,7 +2,7 @@
   "backgroundColor": "#F6F6F6",
   "backgroundTextStyle": "light",
   "navigationBarBackgroundColor": "#F6F6F6",
-  "navigationBarTitleText": "我的群组",
   "navigationBarTextStyle": "black",
+  
   "usingComponents": {}
 }

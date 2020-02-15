@@ -1,0 +1,60 @@
+/*/* 应用于四个边 padding: 1em;
+垂直方向| 水平方向 padding: 5% 10%;
+顶部| 水平方向| 底部 padding: 1em 2em 2em; 
+顶部| 右边| 底部| 左边 padding: 2px 1em 0 1em;
+padding: inherit;*/
+
+page{
+  background: #f6f6f6;
+}
+
+.btncontainer{
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 50rpx;
+  margin-top: 40rpx;
+}
+
+.buttonview{
+  padding:10rpx 15rpx;
+  border-radius: 10rpx;
+  /*边框记得加 solid/dashed/dotted */
+  border: 2rpx solid rgb(0,0,0,0.1);
+  background: white;
+  font-size: 24rpx;
+  margin-right: 20rpx;
+}
+
+.btclicked{
+  background: rgb(0,0,0,0.1);
+}
+
+.memberscontainer{
+  margin:20rpx auto;
+  height: 950rpx;
+  width: 700rpx;
+  background: #f6f6f6;
+  border: rgb(0,0,0,0.1) solid 4rpx;
+}
+
+.member{
+  padding:20rpx 10rpx;/*padding和内部avatar控制组件高度*/
+  background: white;
+  border-bottom: rgb(0,0,0,0.1) solid 2rpx;
+  display:flex;
+  align-items: center;
+  /* margin-bottom: 8rpx; */
+}
+
+.memberavatar{
+  margin-left: 10rpx;
+  width:100rpx;
+  height:100rpx;
+  border-radius: 50%;
+}
+
+.memtext{
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+}

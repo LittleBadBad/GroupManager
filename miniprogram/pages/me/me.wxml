@@ -1,0 +1,15 @@
+<view class="infocontainer"
+      style="background-image: url({{backgroundimg}});" mode='aspectFit'>
+    <view style="height:140rpx"></view>
+    <view style="height:auto;display:flex;justify-content:center;">
+        <view class="userinfo-avatar"
+        style="background-image: url({{userinfo.avatarUrl}});margin-bottom:20rpx;margin-top:auto"></view>
+    </view>
+    <view wx:if="{{userinfo.name}}" class="userinfo-name">{{userinfo.name}}</view>
+    <button wx:else class="userinfo-name authbtn" hover-class="auth-hover"
+    open-type="getUserInfo" bindgetuserinfo="authorize">点击授权</button> 
+</view>
+<view wx:for="{{infocards}}">
+    <view class="infocard" hover-class="card-hover">{{item}}</view>
+</view>
+

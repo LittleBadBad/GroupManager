@@ -1,0 +1,49 @@
+page{
+  background: #f6f6f6;
+}
+
+.group-dismiss{
+  width:48rpx;
+  margin-right:20rpx;
+  margin-left: auto;
+  border-bottom: 1px rgba(0, 0, 0, 0.1) solid;
+}
+
+.groupinfo-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: white;
+}
+
+.groupsum{
+  height: 200rpx;
+  width: 600rpx;
+  font-size: 24rpx;
+  margin:20rpx auto;
+  background: white;
+}
+
+.container{
+width: 500rpx;
+height: 800rpx;
+background:#f6f6f6;
+display: flex;
+flex-direction: row;/*横向排列*/
+flex-wrap: wrap; 
+justify-content:space-around;
+margin:0 auto;
+}
+
+.model{
+  width: 240rpx;
+  height: 390rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border: 6rpx rgba(0, 0, 0, 0.1);
+}
