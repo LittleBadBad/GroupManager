@@ -19,7 +19,7 @@
 	},
 	"appid": "wx36ad53f2eb34ba26",
 	"projectname": "wxtest",
-	"libVersion": "2.2.5",
+	"libVersion": "2.10.1",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"compileType": "miniprogram",
@@ -39,13 +39,26 @@
 		"game": {
 			"list": []
 		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
 		"miniprogram": {
 			"current": 0,
 			"list": [
 				{
+					"id": 0,
+					"name": "13混吃等死群成员",
+					"pathName": "pages/members/groupMember/groupMember",
+					"query": "gid=13&&pid=oZ_4-5ewqq5GdjcTgEBjDfvr00Jo&&ischairman=1&&auth=1111111",
+					"scene": null
+				},
+				{
 					"id": -1,
-					"name": "db guide",
-					"pathName": "pages/databaseGuide/databaseGuide"
+					"name": "13混吃等死群部门",
+					"pathName": "pages/members/division/division",
+					"query": "gid=13",
+					"scene": null
 				}
 			]
 		}

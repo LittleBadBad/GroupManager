@@ -2,7 +2,7 @@
 <view class="container">
 
   <!-- 用户 -->
-  <view class="userinfo">
+  <!-- <view class="userinfo">
     <view 
       open-type="getUserInfo" 
       bindgetuserinfo="onGetUserInfo"
@@ -18,39 +18,38 @@
       <view class="userinfo-nickname"
             wx:if="{{authorized}}">{{username}}</view>
       </view>
-  </view>
+  </view> -->
 
   <!--按钮-->
   <view class="buttoncontainer">
-    <button class='groupbutton1' bindtap="groupSearch">群查找</button>
-    <button class='groupbutton2' bindtap='groupCreate'>创建群</button>
+    <button class='groupbutton1' bindtap="groupSearch">社团查找</button>
+    <button class='groupbutton2' bindtap='groupCreate'>创建社团</button>
   </view>
 
   <!--社团列表-->
   <scroll-view scroll-y="true" class="groupcontainer">
-  <view wx:if='{{noGroup}}' style="display:flex;justify-content:center;">尚未添加任何群</view>
-    <view wx:if='{{!noGroup}}' wx:for="{{grouplist}}" data-index='{{index}}' wx:key="*this" bindtap='toMyGroup'>
-      <view class="groupinfo">
+  <view wx:if="{{!grouplist.length}}" style="display:flex;justify-content:center;">尚未添加任何社团</view>
+    <view wx:for="{{grouplist}}" data-index='{{index}}' bindtap='toMyGroup'>
+      <view wx:if="{{!item.dismissed}}" class="groupinfo" hover-class="groupinfo-hover">
         <view 
-           open-type="getUserInfo" 
-           bindgetuserinfo="onGetUserInfo"
            class="userinfo-avatar"
-           style="background-image: url({{item.avatarUrl}})"
+           style="background-image: url({{item.done ? item.avatar : '../../../../images/loading.gif'}})"
         >
         </view>
-          <view  bindtap='toMyGroup'>
+          <view>
               <view class="line1">
                 <view class="groupname">{{item.name}}</view>
-                <view class="gnum">{{item.num}}人</view>
+                <view class="gnum" wx:if='{{item.num}}'>{{item.num}}人</view>
               </view>
-          <view class="groupsum">{{item.sum}}</view>
+              <view class="groupsum">{{item.intro}}</view>
         </view>
       </view>
     </view>
   </scroll-view>
 </view>
 
-<!--群搜索弹窗-->
+<!--弹窗 = 隐藏在页面底部300%处不触发就不显示，触发后弹出原位置距离，并使背景色变为透明暗灰色-->
+<!--社团搜索弹窗-->
 <view class="zan-dialog {{ tapsearch ? 'zan-dialog--show' : '' }}">
   <view class="zan-dialog__mask" bindtap="toggleSearch" />
   <view class="zan-dialog__container">
@@ -75,39 +74,45 @@
         </view>
         <!--搜索信息-->
         <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
-                <view wx:for="{{grouplist}}">
+            <scroll-view scroll-y class='groupsearchcontainer'>
+            <!--wx:for-index="i"规定索引值；{{i}}-->
+                <view wx:for="{{grouplistsearch}}" wx:for-index="i">
                   <view class="groupinfo">
                       <view 
                         open-type="getUserInfo" 
                         bindgetuserinfo="onGetUserInfo"
                         class="userinfo-avatar"
-                        style="background-image: url({{item.avatarUrl}})"
-                      >
+                        style="background-image: url({{item.avatar}})">
                       </view>
-                      <view  bindtap='toMyGroup'>
-                      <view class="groupname">{{inputVal}}</view>
-                      <view class="groupsum">{{item.sum}}</view>
+                      <view>
+                        <view class="groupname">{{item.name}}</view>
+                        <view class="groupsum">{{item.intro}}</view>
                       </view>
+                      <button wx:if="{{!item.joined}}" size="mini"
+                      style="font-size:24rpx" 
+                      bindtap="joinReq" id="{{i}}">申请加入</button>
+                      <button wx:else size="mini" style="font-size:24rpx" disabled>已加入</button>
                   </view>
                 </view>
+            </scroll-view>
         </view>
     </view>
   </view>
 </view>
 
-<!--群创建弹窗-->
-<view class="zan-dialog {{ tapcreate ? 'zan-dialog--show' : '' }}">
+<!--社团创建弹窗-->
+<view class="{{ tapcreate ? 'zan-dialog--show' : '' }}">
   <view class="zan-dialog__mask" bindtap="toggleCreate" />
   <view class="zan-dialog__container">
-      <form bindsubmit='submitgroup'>
-            <image class="img" src="../../images/user-unlogin.png"/>
+      <form bindsubmit='subGroup'>
+            <image class="img" src='{{groupavatar}}'/>
             <view
              style="display:flex;justify-content:center;margin:10rpx auto;width:200rpx"
              hover-class="uploadgroup"
-             bindtap="doUpload">上传群头像</view>
+             bindtap="doUpload">上传社团头像</view>
           <!--单输入行-->
             <view class="inputline">
-              <view>群名：</view>
+              <view>社团名：</view>
               <input name='gname'></input>
             </view>
             <view class="inputline">
@@ -121,4 +126,24 @@
             <button form-type="submit">提交</button>
         </form>
   </view>
+</view>
+
+<view class="{{ authdialog ? 'zan-dialog--show' : '' }}">
+  <view class="zan-dialog__mask" bindtap="toggleAuth" />
+    <view class="zan-dialog__container">
+      <view style="height:480rpx; display:flex;justify-content:center;align-items:center">
+      小程序需要您的授权</view>
+      <view style="display:flex">
+        <button size="mini" open-type="getUserInfo" bindgetuserinfo="authorize">确认授权</button>
+        <button size="mini">取消授权</button>
+      </view>
+    </view>
+</view>
+
+<!--浮窗模板-->
+<view class="{{ authclicked ? 'zan-dialog--show' : '' }}">
+  <view class="zan-dialog__mask" bindtap="toggleAuth" />
+    <view class="zan-dialog__container">
+
+    </view>
 </view>

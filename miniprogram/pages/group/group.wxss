@@ -3,10 +3,15 @@ page{
 }
 
 .group-dismiss{
-  width:48rpx;
   margin-right:20rpx;
   margin-left: auto;
-  border-bottom: 1px rgba(0, 0, 0, 0.1) solid;
+  font-size:24rpx;
+  color:rgba(0, 0, 0, 0.5);
+  border-bottom: 2rpx rgba(0, 0, 0, 0.5) solid;
+}
+
+.dismiss-hover{
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .groupinfo-avatar {
@@ -32,18 +37,26 @@ height: 800rpx;
 background:#f6f6f6;
 display: flex;
 flex-direction: row;/*横向排列*/
-flex-wrap: wrap; 
+flex-wrap: wrap; /*换行*/
 justify-content:space-around;
+align-content: flex-start;
 margin:0 auto;
 }
 
 .model{
-  width: 240rpx;
-  height: 390rpx;
+  width: 230rpx;
+  height: 340rpx;
+  margin-top: 20rpx;
+  background: white;
+  border-radius: 10rpx;
+  box-shadow:0 2rpx 5rpx 5rpx rgba(0, 0, 0, 0.1);
+  /*文字居中*/
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: white;
-  border: 6rpx rgba(0, 0, 0, 0.1);
+}
+
+.model-clicked{
+  background:rgba(0, 0, 0, 0.1);
 }
