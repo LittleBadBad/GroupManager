@@ -1,20 +1,53 @@
 <view class="btncontainer">
   <view class="buttonview"
-    hover-class="btclicked">副部权限</view>
+    hover-class="btclicked"
+    bindtap="test">副部权限</view>
   <view class="buttonview"
     hover-class="btclicked">换届</view>
   <view class="buttonview"
     hover-class="btclicked">招募部员</view>
 </view>
 <view class='memberscontainer'>
-  <view wx:for='{{divmember}}' data-index="{{index}}">
+  <view wx:for='{{divmember}}' data-index="{{index}}" bindtap="clkDivMem">
     <view class="member">
       <image class="memberavatar" src='{{item.avatar}}'></image>
         <view style="padding-left:20rpx">
-          <view class="memtext">{{item.name}}{{index==0 ? "(我)" : ''}}</view>
+          <view class="memtext">{{item.name}}{{item.pid == useropenid ? '（我）':''}}</view>
           <!--句内引号"，句外引号'-->
-          <view class="memtext" style="color:grey;font-size:24rpx">{{item.status}}</view>
+          <view class="memtext" style="color:grey;font-size:24rpx">{{item.division.divstatus}}</view>
         </view>
     </view>
   </view>
+</view>
+
+<!--个人信息弹窗-->
+<!--群创建弹窗-->
+<view class="{{ divmemclkd ? 'zan-dialog--show' : '' }}">
+  <view class="zan-dialog__mask" bindtap="toggDivMem" />
+    <view class="zan-dialog__container" style="height:700rpx">
+      <form >
+        <view class="remove-block">
+          <view wx:if="{{showremove}}" class="remove-text"
+          bindtap="removeMem" hover-class="division-hover">移除</view>
+        </view>
+        <view style="display:flex;align-items:center;margin-left:20rpx;margin-bottom:30rpx">
+          <image src="{{divmemchosed.avatar}}" class="memberavatar" style="height:100rpx;width:100rpx"/>
+          <view style="margin-left:20rpx">{{divmemchosed.name}}</view>
+        </view>
+        <view class="infobar">加入时间：{{divmemchosed.division.jointime}}</view>
+        <view class="infobar">联系方式：{{}}</view>
+        <view class="infobar">
+          <view>部门身份：</view>
+          <picker wx:if="{{showpicker}}"
+          style="width:380rpx" bindchange="bindStatusChange"
+          bindtap="bindStatusTap" value="{{i}}"
+          range="{{statuslist}}">
+            <view>{{statuslist[i]}}</view>
+          </picker>
+          <view wx:else>{{memberchosed.division.divstatus}}</view>
+        </view>
+        <scroll-view></scroll-view>
+        <button wx:if="{{showpicker}}" bindtap="chgStatus">确认更改</button>
+      </form>
+    </view>
 </view>

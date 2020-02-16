@@ -85,7 +85,7 @@
                         style="background-image: url({{item.avatar}})">
                       </view>
                       <view>
-                        <view class="groupname">{{item.name}}</view>
+                        <view class="groupname">{{item.gname}}</view>
                         <view class="groupsum">{{item.intro}}</view>
                       </view>
                       <button wx:if="{{!item.joined}}" size="mini"

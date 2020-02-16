@@ -139,7 +139,7 @@ inputTyping: function (e) {
     complete: (res) => {},
     fail: (res) => {},
     success: result => {
-      console.log('搜索结果',result)
+      //console.log('搜索结果',result)
       //取群交集 O(n^2) *待优化*
       var grouplistsearch=new Array()
       grouplistsearch=result.data.grouplist

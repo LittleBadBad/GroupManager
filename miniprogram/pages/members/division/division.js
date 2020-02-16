@@ -5,6 +5,7 @@ Page({
 
   data: {
     groupid:'',
+    ischairman:0,
 
     divisionlist:[],
     memberlist:[],
@@ -36,7 +37,8 @@ Page({
   onLoad: function (options) {
     console.log(options)
     this.setData({
-      groupid:options.gid
+      groupid:options.gid,
+      ischairman:options.ischairman=='true'
     })
     const eventChannel = this.getOpenerEventChannel()
     var _this=this

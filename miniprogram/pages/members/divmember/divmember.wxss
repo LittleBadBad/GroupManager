@@ -34,7 +34,7 @@ page{
   height: 950rpx;
   width: 700rpx;
   background: #f6f6f6;
-  border: rgb(0,0,0,0.1) solid 4rpx;
+  border: rgb(0,0,0,0.3) solid 3rpx;
 }
 
 .member{
@@ -57,4 +57,66 @@ page{
   height: 50rpx;
   display: flex;
   align-items: center;
+}
+
+/*悬浮窗CSS*/
+.zan-dialog__mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+}
+.zan-dialog__container {
+  position: fixed;
+  bottom: 400rpx;
+  width: 650rpx;
+  height: 600rpx;
+  left: 50rpx;
+  background: #f6f6f6;
+  transform: translateY(300%);/*不点击时在300%处隐藏，点击后0处出现*/
+  transition: all 0.4s ease;/*出现和消失均用时0.4s*/
+  z-index: 12;
+  border-radius: 20rpx;
+  box-shadow: 0px 3px 3px 2px gainsboro;
+}
+.zan-dialog--show .zan-dialog__container {
+  transform: translateY(0);
+}
+.zan-dialog--show .zan-dialog__mask {
+  display: block;
+}
+
+/*成员信息弹窗*/
+.remove-block{
+  height: 42rpx;
+  width: 60rpx;
+  margin-top: 24rpx;
+  margin-right: 24rpx;
+  margin-left: auto;
+}
+
+.remove-text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24rpx;
+  border: rgb(0,0,0,0.3) solid 2rpx;
+  border-radius: 10%;
+  color: rgb(0,0,0,0.5);
+}
+
+.infobar{
+  background: white;
+  border:#f6f6f6 solid 2rpx;
+  height:80rpx;
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  padding-top: 10rpx;
+  padding-left: 40rpx;
 }

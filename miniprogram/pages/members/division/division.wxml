@@ -5,7 +5,8 @@
       <view class="divtext" style="font-size:24rpx;color:grey">{{item.intro}}</view>
     </view>
   </view>
-  <view class="division" style="display:flex;align-items:center;padding-left:20rpx;color:grey" hover-class="division-hover" bindtap="clickAdd">添加...</view>
+  <view class="division" wx:if="{{ischairman}}"
+  style="display:flex;align-items:center;padding-left:20rpx;color:grey" hover-class="division-hover" bindtap="clickAdd">添加...</view>
 </scroll-view>
 
 <!--添加部门浮窗-->
@@ -58,7 +59,7 @@
       <view class="zan-dialog__mask" bindtap="toggleDiv" />
       <view class="zan-dialog__container"
       style="height:700rpx;width:600rpx;">
-          <view bindtap="editDiv"
+          <view bindtap="editDiv" wx:if="{{ischairman}}"
           style="text-align:right;font-size:24rpx;color:grey;margin-right:16rpx">编辑</view>
           <view style="text-align:center;margin-top:40rpx">{{divchosed.dname}}</view>
           <view style="margin:40rpx 30rpx;font-size:24rpx">简介：{{divchosed.intro}}</view>

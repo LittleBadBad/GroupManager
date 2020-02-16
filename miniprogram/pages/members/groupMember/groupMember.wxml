@@ -2,12 +2,10 @@
 <view wx:if="{{changingterm}}" bindtap="clickBack"
 class="buttoncontainer" style="justify-content:center">选择换届成员（点击返回）</view>
 <view wx:else class="buttoncontainer">
-  <view wx:if="{{ischairman}}"
-    class="buttonview"
+  <view class="buttonview"
     hover-class="btclicked"
     bindtap="clickdivision">部门</view>
-  <view wx:if="{{ischairman}}"
-    class="buttonview"
+  <view class="buttonview"
     hover-class="btclicked"
     bindtap="clickauth">权限</view>
   <view wx:if="{{ischairman}}"
@@ -43,7 +41,6 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
 </scroll-view>
 
 <!--个人信息弹窗-->
-<!--群创建弹窗-->
 <view class="{{ memberclicked ? 'zan-dialog--show' : '' }}">
   <view class="zan-dialog__mask" bindtap="toggleMember" />
     <view class="zan-dialog__container" style="height:700rpx">
@@ -90,7 +87,7 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
               </view>
           </view>
         </scroll-view>
-        <button form-type="submit">提交</button>
+        <button wx:if="{{ischairman}}" form-type="submit">提交</button>
       </form>
     </view>
 </view>

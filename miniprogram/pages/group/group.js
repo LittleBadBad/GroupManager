@@ -33,7 +33,7 @@ Page({
       })
       if(data.group.status=='主席')
         that.setData({
-          ischairman:1
+          ischairman:true
         })
     })
     console.log(this.data)

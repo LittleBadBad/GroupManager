@@ -68,13 +68,13 @@ Page({
 
 
   onLoad: function (options) {
-    console.log(options)
     this.setData({
       groupid:options.gid,
       useropenid:options.pid,
-      ischairman:options.ischairman=='1',
+      ischairman:options.ischairman=='true',
       auth:options.auth
     })
+    console.log('groupmember onload',this.data.ischairman)
   },
 
   onReady(){
@@ -90,7 +90,7 @@ Page({
           //拼接 要显示的身份 字符串
           var divlen=memberlist[i].divisionlist.length
           memberlist[i].statusshow=memberlist[i].status
-          if(divlen){
+          if(memberlist[i].status=='成员'&&divlen){
             memberlist[i].statusshow = ''
             for (let j = 0; j < divlen; j++) {
               j==0 ?  '' : (memberlist[i].statusshow += '，')
@@ -137,32 +137,31 @@ Page({
 
   },
 
-toMyDiv(e){
-  console.log(e)
-  let index = e.currentTarget.dataset.index
-  var divison = this.data.divisionlist[index]
-  var memberlist = this.data.memberlist
-  var divmember=new Array()
-  let n=0;
-  for (let i = 0; i < memberlist.length; i++) //部员列表生成
-    for (let j = 0; j < memberlist[i].divisionlist.length; j++) 
-      if (memberlist[i].divisionlist[j].did==divison.did){
-        divmember[n]=memberlist[i]
-        divmember[n++].division=memberlist[i].divisionlist[j]
-      }
-  console.log(divmember)
-    wx.navigateTo({
-      url: '../divmember/divmember',
-      complete: (res) => {},
-      fail: (res) => {},
-      success: (result) => {
-        result.eventChannel.emit('acceptdiv&divMem',
-        {
-          division: divison,
-          divmember:divmember
-         })
-      },
-    })
+  //进入我的部门
+  toMyDiv(e){
+    console.log(e)
+    let index = e.currentTarget.dataset.index
+    var divison = this.data.divisionlist[index]
+    var memberlist = this.data.memberlist
+    var divmember=new Array()
+    let n=0;
+    for (let i = 0; i < memberlist.length; i++) //部员列表生成
+      for (let j = 0; j < memberlist[i].divisionlist.length; j++) 
+        if (memberlist[i].divisionlist[j].did==divison.did){
+          divmember[n]=memberlist[i]
+          divmember[n++].division=memberlist[i].divisionlist[j]
+        }
+    console.log(divmember)
+      wx.navigateTo({
+        url: '../divmember/divmember?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman,
+        success: (result) => {
+          result.eventChannel.emit('acceptdiv&divMem',
+          {
+            division: divison,
+            divmember:divmember
+          })
+        },
+      })
   },
 
 //成员
@@ -238,13 +237,6 @@ clickauth(){
     {name:'社团设备借用管理',clicked:0},
     {name:'社团成员增删',clicked:0},
     {name:'部长任命',clicked:0}]
-  var authlist2=[
-    {name:'社团值班发布',clicked:0},
-    {name:'活动信息管理',clicked:0},
-    {name:'社团资金管理',clicked:0},
-    {name:'社团设备信息管理',clicked:0},
-    {name:'社团设备借用管理',clicked:0},
-    {name:'社团成员增删',clicked:0}]
 
   var statuslist=new Array()
   statuslist[0]=new Object()
@@ -279,15 +271,17 @@ toggleAuth(){
 
 //点击权限弹窗中的身份
 clickstatus(e){
-  let i=e.currentTarget.dataset.index
-  var statuslist=this.data.statuslist
-  for (let j = 0; j < statuslist.length; j++) {
-    j!=i ? statuslist[j].clicked=false : statuslist[j].clicked=!statuslist[j].clicked
+  if(this.data.ischairman){
+    let i=e.currentTarget.dataset.index
+    var statuslist=this.data.statuslist
+    for (let j = 0; j < statuslist.length; j++) {
+      j!=i ? statuslist[j].clicked=false : statuslist[j].clicked=!statuslist[j].clicked
+    }
+    this.setData({
+      i:i,
+      statuslist:statuslist
+    })
   }
-  this.setData({
-    i:i,
-    statuslist:statuslist
-  })
   //console.log(statuslist)
 },
 
@@ -344,16 +338,18 @@ slctMember(e){
   }
 },
 
+//点击部门按钮
 clickdivision(e){
   wx.navigateTo({
-    url: '../division/division?gid='+this.data.groupid,
+    url: '../division/division?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman,
     complete: (res) => {},
     fail: (res) => {},
     success: (result) => {
       result.eventChannel.emit('acceptdiv&mem',
        {
          divisionlist: this.data.divisionlist,
-         memberlist:this.data.memberlist
+         memberlist:this.data.memberlist,
+         useropenid:this.data.useropenid
         })
     },
   })
