@@ -44,7 +44,7 @@
           range="{{statuslist}}">
             <view>{{statuslist[i]}}</view>
           </picker>
-          <view wx:else>{{memberchosed.division.divstatus}}</view>
+          <view wx:else>{{divmemchosed.division.divstatus}}</view>
         </view>
         <scroll-view></scroll-view>
         <button wx:if="{{showpicker}}" bindtap="chgStatus">确认更改</button>

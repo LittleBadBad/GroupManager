@@ -7,6 +7,8 @@ Page({
    */
   data: {
     //个人
+    mygroup:{},
+
     groupid:'',
     useropenid:'',
     ischairman:0,
@@ -68,19 +70,27 @@ Page({
 
 
   onLoad: function (options) {
-    this.setData({
-      groupid:options.gid,
-      useropenid:options.pid,
-      ischairman:options.ischairman=='true',
-      auth:options.auth
+    // this.setData({
+    //   groupid:options.gid,
+    //   useropenid:options.pid,
+    //   ischairman:options.ischairman=='true',
+    //   auth:options.auth
+    // })
+    //console.log('groupmember onload',this.data.ischairman)
+    const eventChannel = this.getOpenerEventChannel()
+    var that=this
+    eventChannel.on('getData',function(data){
+      that.setData({
+        useropenid:data.pid,
+        mygroup:data.group
+      })
     })
-    console.log('groupmember onload',this.data.ischairman)
   },
 
   onReady(){
     //请求社团成员列表
     wx.request({
-      url: 'http://st.titordong.cn/GetTeam_Mem?gid='+this.data.groupid,
+      url: 'http://st.titordong.cn/GetTeam_Mem?gid='+this.data.mygroup.gid,
       complete: (res) => {},
       fail: (res) => {},
       success: (result) => {
@@ -112,7 +122,7 @@ Page({
           url: 'http://st.titordong.cn/GetDivision',
           complete: (res) => {},
           data: {
-            gid:this.data.groupid
+            gid:this.data.mygroup.gid
           },
           fail: (res) => {},
           success: (result) => {
@@ -120,10 +130,10 @@ Page({
             this.setData({
               divisionlist:result.data.divisionlist
             })
-            if (this.data.ischairman)
+            if (this.data.mygroup.ischairman)
               this.setData({user_divlist:result.data.divisionlist})
             else if(memberlist[0].status=='副主席')
-            Number(this.data.auth[6]) ? 
+            Number(this.data.mygroup.auth[6]) ? 
             this.setData({user_divlist:result.data.divisionlist}):this.setData({user_divlist:''})
             else
               this.setData({user_divlist:this.data.memberlist[0].divisionlist})
@@ -139,7 +149,7 @@ Page({
 
   //进入我的部门
   toMyDiv(e){
-    console.log(e)
+    //console.log(e)
     let index = e.currentTarget.dataset.index
     var divison = this.data.divisionlist[index]
     var memberlist = this.data.memberlist
@@ -151,14 +161,17 @@ Page({
           divmember[n]=memberlist[i]
           divmember[n++].division=memberlist[i].divisionlist[j]
         }
-    console.log(divmember)
+    //console.log(divmember)
+    // ?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman
       wx.navigateTo({
-        url: '../divmember/divmember?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman,
+        url: '../divmember/divmember',
         success: (result) => {
           result.eventChannel.emit('acceptdiv&divMem',
           {
+            useropenid: this.data.useropenid,
             division: divison,
-            divmember:divmember
+            divmember:divmember,
+            group:this.data.mygroup
           })
         },
       })
@@ -178,7 +191,7 @@ clickmember(e){
   
   //检查是否可以对该成员进行身份修改
   //1. 只有主席可以修改所有人身份为副主席和成员 2. 自己不可修改自己的身份
-  if(i==0 ? 0 : this.data.ischairman){
+  if(i==0 ? 0 : this.data.mygroup.ischairman){
     var statuslist=['成员','副主席']
     member.status=='成员' ? this.setData({i:0}) : this.setData({i:1})
     this.setData({
@@ -190,7 +203,7 @@ clickmember(e){
 
   //检查是否可对该成员进行移除操作
   //1. 本人不可移除本人 2. 不可移除主席 3. 主席必有权限 4. 检查5号权限
-  if(i==0 ? 0 : (member.status=='主席'? 0 : (this.data.ischairman ? 1 : Number(this.data.auth[5]))))
+  if(i==0 ? 0 : (member.status=='主席'? 0 : (this.data.mygroup.ischairman ? 1 : Number(this.data.mygroup.auth[5]))))
     this.setData({showremove:1})
   else
     this.setData({showremove:0})
@@ -242,7 +255,7 @@ clickauth(){
   statuslist[0]=new Object()
   statuslist[0].name='副主席'
   statuslist[0].clicked=false
-  statuslist[0].id=this.data.groupid
+  statuslist[0].id=this.data.mygroup.gid
   statuslist[0].authlist=authlist1
   for (let i = 0; i < this.data.divisionlist.length; i++) {
     statuslist[i+1]=new Object()
@@ -271,7 +284,7 @@ toggleAuth(){
 
 //点击权限弹窗中的身份
 clickstatus(e){
-  if(this.data.ischairman){
+ 
     let i=e.currentTarget.dataset.index
     var statuslist=this.data.statuslist
     for (let j = 0; j < statuslist.length; j++) {
@@ -281,21 +294,25 @@ clickstatus(e){
       i:i,
       statuslist:statuslist
     })
-  }
+  
   //console.log(statuslist)
 },
 
+//点击权限条目
 clkAuthItm(e){
-  var statuslist=this.data.statuslist
-  var i=this.data.i
-  var j=e.currentTarget.dataset.index
-  var flag = statuslist[i].authlist[j].clicked
-  statuslist[i].authlist[j].clicked=!flag
-  this.setData({//setData可即时更改前端画面
-    statuslist:statuslist
-  })
+    if(this.data.mygroup.ischairman){
+      var statuslist=this.data.statuslist
+      var i=this.data.i
+      var j=e.currentTarget.dataset.index
+      var flag = statuslist[i].authlist[j].clicked
+      statuslist[i].authlist[j].clicked=!flag
+      this.setData({//setData可即时更改前端画面
+        statuslist:statuslist
+      })
+  }
 },
 
+//点击换届
 clkChgTerm(){
   this.setData({
     changingterm:1
@@ -310,7 +327,7 @@ clickBack(){
 
 slctMember(e){
  var i=e.currentTarget.dataset.index
- if(i){
+ if(i){//i不等于0 不能是自己
     var memberlist=this.data.memberlist
     memberlist[i].clicked=1
     this.setData({
@@ -340,8 +357,9 @@ slctMember(e){
 
 //点击部门按钮
 clickdivision(e){
+  // ?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman
   wx.navigateTo({
-    url: '../division/division?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman,
+    url: '../division/division',
     complete: (res) => {},
     fail: (res) => {},
     success: (result) => {
@@ -349,7 +367,8 @@ clickdivision(e){
        {
          divisionlist: this.data.divisionlist,
          memberlist:this.data.memberlist,
-         useropenid:this.data.useropenid
+         useropenid:this.data.useropenid,
+         group:this.data.mygroup
         })
     },
   })

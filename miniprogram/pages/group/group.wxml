@@ -1,9 +1,9 @@
-<view class='{{ischairman? "group-dismiss" : ""}}' hover-class="dismiss-hover" style="width:48rpx;height:30rpx;" bindtap="dismiss">{{ischairman ? '解散' : ''}}</view>
+<view class='{{mygroup.ischairman? "group-dismiss" : ""}}' hover-class="dismiss-hover" style="width:48rpx;height:30rpx;" bindtap="dismiss">{{mygroup.ischairman ? '解散' : ''}}</view>
 <view 
   open-type="getUserInfo" 
   bindgetuserinfo="onGetUserInfo"
   class="groupinfo-avatar"
-  style="background-image: url({{avatarUrl}})"
+  style="background-image: url({{group.avatar}})"
 ></view>
 <view class='groupsum'>群简介：{{groupsum}}</view>
 <!--四大模块包含容器-->

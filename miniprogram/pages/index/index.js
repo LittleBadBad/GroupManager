@@ -45,14 +45,6 @@ Page({
 onShow(){
   if(this.data.userOpenid)
     this.login(this.data.userOpenid)
-  // wx.getImageInfo({
-  //   src: this.data.groupavatar,
-  //   complete: (res) => {},
-  //   fail: (res) => {},
-  //   success: (result) => {
-  //     console.log(result)
-  //   },
-  // })
 },
 
 onReady(){
@@ -63,7 +55,7 @@ onReady(){
     this.setData({userOpenid:res.result.openid})
     //调取本地全局数据要加this
     console.log('userOpenid:',this.data.userOpenid)
-    this.login(this.data.userOpenid)
+    this.login(this.data.userOpenid)//请求登录数据
   },
   fail:res=>{console.log(res)}
 })

@@ -5,12 +5,13 @@ Page({
     goupid:'',
     ischairman:0,
     divmember:'',
-    useropenid:'',
-    statuslist:['部长','副部'],
+    useropenid:'',    
 
     //部员弹窗
     divmemchosed:'',
-    divmemclkd:0
+    divmemclkd:0,
+    showpicker:0,
+    statuslist:['部长','副部','部员'],
   },
 
   /**
@@ -51,6 +52,8 @@ Page({
       divmemchosed:divmemchosed,
       divmemclkd:1
     })
+    //1. 不可修改本人，2. 主席能改 部长 副部长 部员 3. 部长能改 副主席 部员 4. 其余人不具备此权限
+  if(i==0 ? 0:)
   },
 
   toggDivMem(){

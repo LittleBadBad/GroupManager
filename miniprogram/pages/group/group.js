@@ -5,12 +5,22 @@ Page({
    * 页面的初始数据
    */
   data: {
+    mygroup:{
+      gid:'',
+      name:'',
+      intro:'',
+      status:'',
+      ischairman:'',
+      myauth:'',
+      avatar:''
+    },
+
     ischairman:0,
     userOpenid:'',
     groupid:'',
     groupsum:'',
     ischairman:false,
-    myauth:'',
+    auth:'',
     avatarUrl:''
   },
 
@@ -24,30 +34,35 @@ Page({
       wx.setNavigationBarTitle({
         title: data.group.name,
       })
-      that.setData({
-        userOpenid:data.pid,
-        groupid:data.group.gid,
-        myauth:data.group.auth,
-        groupsum:data.group.intro,
-        avatarUrl:data.group.avatar
-      })
+      var group=data.group
+      // that.setData({
+      //   userOpenid:data.pid,
+      //   groupid:data.group.gid,
+      //   myauth:data.group.auth,
+      //   groupsum:data.group.intro,
+      //   avatarUrl:data.group.avatar
+      // })
       if(data.group.status=='主席')
-        that.setData({
-          ischairman:true
-        })
+        group.ischairman=true
+      that.setData({
+        mygroup:group,
+        userOpenid:data.pid,
+      })
     })
-    console.log(this.data)
+    //console.log(this.data)
   },
 
   toMembers(){
-    var url='../members/groupMember/groupMember?gid='+this.data.groupid+'&&pid='+this.data.userOpenid+'&&ischairman='+this.data.ischairman+'&&auth='+this.data.myauth
+    var url='../members/groupMember/groupMember'
     wx.navigateTo({
       /*页面跳转：打 ‘../’即可查看目录结构*/
       url:url,
-      complete: (res) => {},
-      fail: (res) => {},
-      success: (result) => {
-        console.log(url)
+      success: (res) => {
+        //console.log(url)
+        res.eventChannel.emit('getData',{
+          pid:this.data.userOpenid,
+          group:this.data.mygroup
+        })
       },
     })
   },
@@ -71,7 +86,7 @@ Page({
          */
         if(result.confirm)
           wx.request({
-            url: 'http://st.titordong.cn/DeleteTeam?gid='+this.data.groupid,
+            url: 'http://st.titordong.cn/DeleteTeam?gid='+this.data.mygroup.gid,
             complete: (res) => {},
             fail: (res) => {},
             success: result => {
@@ -82,7 +97,7 @@ Page({
                 //prevPage.refreshGroup()//刷新前界面
                 var grouplist=prevPage.data.grouplist
                 for (let i = 0; i < grouplist.length; i++) {
-                  if(grouplist[i].gid==this.data.groupid)
+                  if(grouplist[i].gid==this.data.mygroup.gid)
                     grouplist[i].dismissed=1
                 }
                 prevPage.setData({
