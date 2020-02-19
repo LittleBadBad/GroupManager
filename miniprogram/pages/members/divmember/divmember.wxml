@@ -2,9 +2,9 @@
   <view class="buttonview"
     hover-class="btclicked"
     bindtap="test">副部权限</view>
-  <view class="buttonview"
+  <view class="buttonview" wx:if="{{mydivision.status=='部长'}}"
     hover-class="btclicked">换届</view>
-  <view class="buttonview"
+  <view class="buttonview" wx:if="{{Number(mydivision.authfinal[1])}}"
     hover-class="btclicked">招募部员</view>
 </view>
 <view class='memberscontainer'>
@@ -42,7 +42,7 @@
           style="width:380rpx" bindchange="bindStatusChange"
           bindtap="bindStatusTap" value="{{i}}"
           range="{{statuslist}}">
-            <view>{{statuslist[i]}}</view>
+            <view>{{i? statuslist[i]:divmemchosed.division.divstatus}}</view>
           </picker>
           <view wx:else>{{divmemchosed.division.divstatus}}</view>
         </view>

@@ -8,17 +8,17 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
   <view class="buttonview"
     hover-class="btclicked"
     bindtap="clickauth">权限</view>
-  <view wx:if="{{ischairman}}"
+  <view wx:if="{{mygroup.ischairman}}"
     class="buttonview"
     hover-class="btclicked"
     bindtap="clkChgTerm">换届</view>
-  <view wx:if="{{ischairman ? 1:Number(auth[5])}}"
+  <view wx:if="{{mygroup.ischairman ? 1:Number(auth[5])}}"
     class="buttonview"
     hover-class="btclicked">招募</view>
 </view>
 
 <!--成员列表-->
-<view class='memberscontainer'>
+<scroll-view scroll-y class='memberscontainer'>
   <view wx:for='{{memberlist}}' data-index="{{index}}" bindtap="{{changingterm ? 'slctMember':'clickmember'}}">
     <view class="member" style="{{item.clicked ? 'background:rgb(0,0,0,0.1)':''}}">
       <image class="memberavatar" src='{{item.avatar}}'></image>
@@ -29,12 +29,13 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
         </view>
     </view>
   </view>
-</view>
+</scroll-view>
 
+<!--部门列表-->
 <scroll-view scroll-y class="divcontainer">
     <view wx:for="{{user_divlist}}" data-index="{{index}}" bindtap="toMyDiv">
         <view class="division" hover-class="division-hover">
-            <view class="divtext" style="height:80rpx;font-size:30rpx;">{{item.dname}}</view>
+            <view class="divtext" style="height:80rpx;font-size:30rpx;">{{item.name}}</view>
             <view class="divtext" style="height:120rpx;font-size:24rpx;">{{item.intro}}</view>
         </view>
     </view>
@@ -87,7 +88,7 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
               </view>
           </view>
         </scroll-view>
-        <button wx:if="{{ischairman}}" form-type="submit">提交</button>
+        <button wx:if="{{mygroup.ischairman}}" form-type="submit">提交</button>
       </form>
     </view>
 </view>

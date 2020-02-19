@@ -3,9 +3,9 @@
   open-type="getUserInfo" 
   bindgetuserinfo="onGetUserInfo"
   class="groupinfo-avatar"
-  style="background-image: url({{group.avatar}})"
+  style="background-image: url({{mygroup.avatar}})"
 ></view>
-<view class='groupsum'>群简介：{{groupsum}}</view>
+<view class='groupsum'>群简介：{{mygroup.intro}}</view>
 <!--四大模块包含容器-->
 <view class="container">
   <view class='model' hover-class="model-clicked" bindtap="toMembers">成员</view>

@@ -12,16 +12,32 @@ Page({
       status:'',
       ischairman:'',
       myauth:'',
-      avatar:''
+      avatar:'',
+      viceauth:'',
+
+      //最终计算得到的权限
+      auth:''
     },
 
-    ischairman:0,
+    divisionlist:{
+      did:'',
+      dname:'',
+      intro:'',
+      auth:'',//部门7位权限
+      authgroup:'',
+      authdiv:''
+    },
+    mydivlist:{
+      id:'666',
+      name:'公关部',
+
+      status:'部长',
+      myauth:'1111',//权限
+
+      authfinal:'1111'//最终计算4位部门权限
+    },
+
     userOpenid:'',
-    groupid:'',
-    groupsum:'',
-    ischairman:false,
-    auth:'',
-    avatarUrl:''
   },
 
   /**
@@ -52,6 +68,60 @@ Page({
     //console.log(this.data)
   },
 
+  onShow(){
+    //请求社团部门
+    wx.request({
+      url: 'http://st.titordong.cn/GetDivision',
+      complete: (res) => {},
+      data: {
+        gid:this.data.mygroup.gid,
+        pid:this.data.userOpenid
+      },
+      fail: (res) => {},
+      success: (result) => {
+        console.log('本社团部门',result);
+        var divisionlist=result.data.divisionlist
+        var mydivlist=result.data.mydivlist
+        var mygroup=this.data.mygroup
+        
+        //社团权限计算
+        if (mygroup.status=='成员') {
+          var authlist=new Array()
+          for (let i = 0; i < mydivlist.length; i++) {
+            let j = 0
+            for (; j < divisionlist.length; j++)
+              if(mydivlist[i].id==divisionlist[j].did)
+                break;
+            mydivlist[i].status=='部长' ? authlist[i]=divisionlist[j].auth : ''//本部门的权限
+            mydivlist[i].status=='副部' ? authlist[i]=divisionlist[j].authGroup : ''//本部门副部的权限
+          }
+          for (let i = 0; i < authlist.length; i++) {//遍历本人所有权限
+            for(let j = 0; j < 7; j++){//遍历7项权限
+              mygroup.auth[j] = String(Number(authlist[i][j]||mygroup.myauth[j]))
+            }
+          }
+          console.log(mygroup.auth)
+        }else if(mygroup.status=='副主席')
+          mygroup.auth=mygroup.viceauth
+        //部门权限计算
+        for (let i = 0; i < mydivlist.length; i++) {
+          let j = 0
+          for (; j < divisionlist.length; j++)
+            if(mydivlist[i].id==divisionlist[j].did)
+              break;
+          mydivlist[i].status=='副部' ? mydivlist[i].authfinal=divisionlist[j].authdiv : ''
+          mydivlist[i].status=='部长' ? mydivlist[i].authfinal='1111' : ''
+          mydivlist[i].intro=divisionlist[j].intro
+        }
+        this.setData({
+          mygroup:mygroup,
+          divisionlist:divisionlist,
+          mydivlist:mydivlist
+        })
+      },
+    })
+  },
+
   toMembers(){
     var url='../members/groupMember/groupMember'
     wx.navigateTo({
@@ -61,7 +131,9 @@ Page({
         //console.log(url)
         res.eventChannel.emit('getData',{
           pid:this.data.userOpenid,
-          group:this.data.mygroup
+          group:this.data.mygroup,
+          divisionlist:this.data.divisionlist,
+          mydivlist:this.data.mydivlist
         })
       },
     })

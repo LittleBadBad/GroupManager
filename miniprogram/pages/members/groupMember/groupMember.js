@@ -8,6 +8,7 @@ Page({
   data: {
     //个人
     mygroup:{},
+    mydivlist:{},
 
     groupid:'',
     useropenid:'',
@@ -53,8 +54,8 @@ Page({
       pid:'123456',
       avatar:'../../../images/1.jpg',
       name:'二狗',
-      division:'',
-      did:'',
+
+      id:'',
       contact:'',
       regtime:'',
       status:'副主席'
@@ -82,7 +83,9 @@ Page({
     eventChannel.on('getData',function(data){
       that.setData({
         useropenid:data.pid,
-        mygroup:data.group
+        mygroup:data.group,
+        divisionlist:data.divisionlist,
+        mydivlist:data.mydivlist
       })
     })
   },
@@ -104,7 +107,7 @@ Page({
             memberlist[i].statusshow = ''
             for (let j = 0; j < divlen; j++) {
               j==0 ?  '' : (memberlist[i].statusshow += '，')
-              memberlist[i].statusshow += (memberlist[i].divisionlist[j].dname + memberlist[i].divisionlist[j].divstatus)
+              memberlist[i].statusshow += (memberlist[i].divisionlist[j].dname + memberlist[i].divisionlist[j].status)
             }
           }
           //将本人放置最前列
@@ -117,28 +120,10 @@ Page({
         this.setData({
           memberlist:memberlist
         })
-        //请求社团部门
-        wx.request({
-          url: 'http://st.titordong.cn/GetDivision',
-          complete: (res) => {},
-          data: {
-            gid:this.data.mygroup.gid
-          },
-          fail: (res) => {},
-          success: (result) => {
-            console.log('本社团部门',result);
-            this.setData({
-              divisionlist:result.data.divisionlist
-            })
-            if (this.data.mygroup.ischairman)
-              this.setData({user_divlist:result.data.divisionlist})
-            else if(memberlist[0].status=='副主席')
-            Number(this.data.mygroup.auth[6]) ? 
-            this.setData({user_divlist:result.data.divisionlist}):this.setData({user_divlist:''})
-            else
-              this.setData({user_divlist:this.data.memberlist[0].divisionlist})
-          },
-        })
+        if(this.data.mygroup.ischairman||Number(this.data.mygroup.auth[6]))
+          this.setData({user_divlist:this.data.divisionlist})
+        else
+          this.setData({user_divlist:this.data.mydivlist})
       },
     })
   },
@@ -151,26 +136,27 @@ Page({
   toMyDiv(e){
     //console.log(e)
     let index = e.currentTarget.dataset.index
-    var divison = this.data.divisionlist[index]
+    var mydivision = this.data.user_divlist[index]
     var memberlist = this.data.memberlist
     var divmember=new Array()
     let n=0;
     for (let i = 0; i < memberlist.length; i++) //部员列表生成
       for (let j = 0; j < memberlist[i].divisionlist.length; j++) 
-        if (memberlist[i].divisionlist[j].did==divison.did){
+        if (memberlist[i].divisionlist[j].id==mydivision.id){
           divmember[n]=memberlist[i]
           divmember[n++].division=memberlist[i].divisionlist[j]
         }
     //console.log(divmember)
     // ?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman
+
       wx.navigateTo({
         url: '../divmember/divmember',
         success: (result) => {
           result.eventChannel.emit('acceptdiv&divMem',
           {
-            useropenid: this.data.useropenid,
-            division: divison,
+            mydivision: mydivision,
             divmember:divmember,
+            useropenid: this.data.useropenid,
             group:this.data.mygroup
           })
         },
@@ -260,7 +246,7 @@ clickauth(){
   for (let i = 0; i < this.data.divisionlist.length; i++) {
     statuslist[i+1]=new Object()
     statuslist[i+1].name=this.data.divisionlist[i].dname
-    statuslist[i+1].id=this.data.divisionlist[i].did
+    statuslist[i+1].id=this.data.divisionlist[i].id
     statuslist[i+1].clicked=false
     statuslist[i+1].authlist=[
       {name:'社团值班发布',clicked:0},
