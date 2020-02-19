@@ -4,8 +4,11 @@ var util = require('../../../utils/util.js');
 Page({
 
   data: {
+    mygroup:'',
+
     groupid:'',
     ischairman:0,
+    useropenid:'',
 
     divisionlist:[],
     memberlist:[],
@@ -36,20 +39,22 @@ Page({
    */
   onLoad: function (options) {
     console.log(options)
-    this.setData({
-      groupid:options.gid,
-      ischairman:options.ischairman=='true'
-    })
+    // this.setData({
+    //   groupid:options.gid,
+    //   ischairman:options.ischairman=='true'
+    // })
     const eventChannel = this.getOpenerEventChannel()
     var _this=this
     eventChannel.on('acceptdiv&mem', function(data) {//上一个页面的数据放本页面调用
      _this.setData({
+       mygroup:data.mygroup,
+       useropenid:data.useropenid,
        divisionlist:data.divisionlist,
        memberlist:data.memberlist
      })
     })
-    console.log(this.data.memberlist)
-    console.log(this.data.divisionlist)
+    // console.log(this.data.memberlist)
+    // console.log(this.data.divisionlist)
   },
 
   clickAdd(){
