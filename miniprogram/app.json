@@ -6,6 +6,9 @@
     "pages/members/groupMember/groupMember",
     "pages/members/divmember/divmember",
     "pages/members/division/division",
+    "pages/actions/index/index",
+    "pages/actions/action/action",
+    "pages/actions/addaction/addaction",
     "pages/me/me",
     "pages/info/info"
   ],
@@ -17,23 +20,26 @@
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "list": [{
-      "pagePath": "pages/index/index",
-      "text": "我的群",
-      "iconPath":"../miniprogram/images/icon-index.jpg",
-      "selectedIconPath":"../miniprogram/images/icon-index-selected.jpg"
-    },{
-      "pagePath": "pages/info/info",
-      "text":"消息",
-      "iconPath":"../miniprogram/images/icon-info.jpg",
-      "selectedIconPath":"../miniprogram/images/icon-info-selected.jpg"
-    },{
-      "pagePath": "pages/me/me",
-      "text": "个人",
-      "iconPath":"../miniprogram/images/icon-me.jpg",
-      "selectedIconPath":"../miniprogram/images/icon-me-selected.jpg"
-    }
-  ]
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "我的群",
+        "iconPath": "../miniprogram/images/icon-index.jpg",
+        "selectedIconPath": "../miniprogram/images/icon-index-selected.jpg"
+      },
+      {
+        "pagePath": "pages/info/info",
+        "text": "消息",
+        "iconPath": "../miniprogram/images/icon-info.jpg",
+        "selectedIconPath": "../miniprogram/images/icon-info-selected.jpg"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "个人",
+        "iconPath": "../miniprogram/images/icon-me.jpg",
+        "selectedIconPath": "../miniprogram/images/icon-me-selected.jpg"
+      }
+    ]
   },
   "sitemapLocation": "sitemap.json"
 }

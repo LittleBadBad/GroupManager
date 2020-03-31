@@ -1,0 +1,104 @@
+<view class="weui-cells__title">活动名</view>
+<view class="weui-cells weui-cells_after-title">
+  <view class="weui-cell">
+    <input class="weui-cell__bd" maxlength="15" bindblur="getName" bindconfirm="getName"
+    placeholder="例：聚餐" value="{{action ? action.name:''}}"></input>
+  </view>
+</view>
+
+<view class="weui-cells__title">活动介绍</view>
+<view class="weui-cells weui-cells_after-title">
+  <view class="weui-cell">
+    <textarea class="weui-cell__bd" maxlength="140" bindblur="getIntro" bindconfirm="getIntro"
+    placeholder="今天又吃垮了一家自助餐"></textarea>
+  </view>
+</view>
+
+<view class="weui-cells__title">活动类型</view>
+<view class="weui-cells weui-cells_after-title">
+  <view url="" class="weui-cell weui-cell_access">
+    <picker class="weui-cell__bd" range="{{unitlist}}" value="{{i}}"
+    bindchange="chgUnit" style="{{selecting ? '':'color:grey'}}">
+      {{selecting ? unit :'社团或部门'}}
+    </picker>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </view>
+</view>
+
+<view class="weui-cells__title">活动日期</view>
+<view class="weui-cells weui-cells_after-title">
+  <view url="" class="weui-cell weui-cell_access">
+    <picker mode="date" value="{{date}}" class="weui-cell__bd" bindchange="chageDate"
+    >{{action.date}}</picker>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </view>
+</view>
+
+<view class="weui-cells__title">添加参与人</view>
+<view class="weui-cells weui-cells_after-title">
+  <view class="weui-cell">
+    <view class="weui-cell__bd {{ptnrselecting ? 'namelist':''}}" bindtap="slctParticipants">
+      <view wx:if="{{ptnrselecting}}">
+        <block wx:for="{{namelist}}">
+          <view wx:if="{{item.clicked}}" catchtap="cancelChoose" data-index="{{index}}"
+          style="margin-left:20rpx;margin-bottom:10rpx;" class='nameblock'>{{item.name}}</view>
+        </block>
+      </view>
+      <view wx:else>点击选择</view>
+    </view>
+     <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </view>
+  <view class="weui-search-bar__box weui-cell">
+    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+    <input type="text" placeholder="手动添加" value="{{inputVal}}"
+    bindconfirm="confirmInput"/>
+  </view>
+  <scroll-view scroll-y style="{{ptnrselecting ? 'height: 240rpx;':''}}" class="namelist">
+    <block class="weui-cell" wx:for="{{ptnrselecting ? namelist : ''}}">
+      <view class='nameblock' bindtap="tabName" data-index="{{index}}" wx:if="{{!item.hide}}"
+      style="margin-left:20rpx;margin-bottom:10rpx;{{item.clicked ? 'background:rgba(0,0,0,0.1)':''}}">
+      {{item.name}}</view>
+    </block>
+  </scroll-view>
+</view>
+
+    <view class="page__bd">
+        <view class="weui-cells">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">
+                    <view class="weui-uploader">
+                        <view class="weui-uploader__hd">
+                          <view class="weui-uploader__overview">
+                              <view class="weui-uploader__title">图片上传</view>
+                              <view class="weui-uploader__info">{{files.length}}/{{limit}}</view>
+                          </view>
+                          <view class="weui-uploader__tips">
+                            上传提示
+                          </view>
+                        </view>
+                        <view class="weui-uploader__bd">
+                            <view class="weui-uploader__files" id="uploaderFiles">
+                                <block wx:for="{{files}}" wx:key="*this">
+                                    <view class="weui-uploader__file" bindtap="previewImage" data-index="{{index}}">
+                                        <view class="weui-uploader__img" style="background-image: url({{item}});background-size:cover;text-align:right">
+                                        <icon data-index="{{index}}" style="margin-right:5px" size="16" type="clear"
+                                        catchtap="cancelUpload">
+                                        </icon>
+                                        </view>
+                                    </view>
+                                </block>
+                            </view>
+                            <view wx:if="{{files.length < limit}}" class="weui-uploader__input-box">
+                                <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <button bindtap="submit" type="primary" style="margin-top:30rpx">确定</button>
+
+<view style='width:0px;height:0px;overflow:hidden;'>
+  <canvas canvas-id='compress'></canvas>
+</view>

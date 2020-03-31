@@ -1,0 +1,128 @@
+<view class="page">
+    <view class="page__hd">
+        <view class="page__title">
+            {{action.unit}} {{action.name}}
+            <view class="logo" bindtap="addAction" wx:if="{{editing}}" id="name" bindtap="edit"
+            style="background-image: url('../../../images/edit.png');height:20px;width:20px" 
+            hover-class="hover"></view>
+        </view>
+        <picker mode="date" class="page__desc" >
+            {{action.date}}
+            <view class="logo" bindtap="addAction" wx:if="{{editing}}"
+            style="background-image: url('../../../images/edit.png');height:20px;width:20px" 
+            hover-class="hover"></view>
+        </picker>
+    </view>
+    <view class="page__bd">
+        <view class="weui-article">
+                <view class="weui-article__section">
+                    <view class="weui-article__h3">
+                        参与人：{{action.participats}}
+                        <view class="logo" bindtap="addAction" wx:if="{{editing}}" bindtap="edit"
+                        style="background-image: url('../../../images/edit.png');height:20px;width:20px" id='participats'
+                        hover-class="hover"></view>
+                    </view>
+
+                    <view class="weui-article__p">
+                        {{action.intro}}
+                        <view class="logo" bindtap="addAction" wx:if="{{editing}}" bindtap="edit"
+                        style="background-image: url('../../../images/edit.png');height:20px;width:20px" id="intro"
+                        hover-class="hover"></view>
+                    </view>
+                    <view class="weui-uploader__files" id="uploaderFiles">
+                        <view wx:if="{{action.imglist.length==0}}">尚未添加活动图片</view>
+                        <block wx:for="{{action.imglist}}" wx:key="*this">
+                            <view class="weui-uploader__file" bindtap="previewImage" data-index="{{index}}">
+                                <view class="weui-uploader__img" style="background-image: url({{item}});background-size:cover;text-align:right">
+                                    <icon data-index="{{index}}" style="margin-right:5px" size="16"
+                                    wx:if="{{editing}}" type="clear" catchtap="cancelUpload">
+                                    </icon>
+                                </view>
+                            </view>
+                        </block>
+                        <view wx:if="{{(action.imglist.length < 9) && editing}}" 
+                            class="weui-uploader__input-box">
+                            <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                        </view>
+                    </view>
+                </view>
+        </view>
+    </view>
+</view>
+    <view class="buttonbar">
+        <button type="warn" bindtap="{{editing ? 'cancelEdit':'deleteAction'}}">
+        {{editing ? '取消':'删除'}}</button>
+        <button bindtap="{{editing ? 'submitAlter':'editAction'}}"
+        >{{editing ? '提交':'编辑'}}</button>
+    </view>
+
+<!--活动名编辑-->
+<view class="weui-demo-dialog {{ editingname ? 'weui-demo-dialog_show' : '' }}">
+  <view class="weui-mask" bindtap="toggleName" />
+    <view class="weui-dialog__wrp" bindtap="toggleName">
+        <view class="weui-dialog">
+            <view class="weui-dialog__bd">
+                <input placeholder="点击输入活动名称"></input>
+            </view>
+            <view class="weui-dialog__ft">
+                <view class="weui-dialog__btn weui-dialog__btn_default" bindtap="toggleName">取消</view>
+                <view class="weui-dialog__btn" bindtap="toggleName">确定</view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<!--参与人编辑-->
+<view class="weui-demo-dialog {{ editingparticipants ? 'weui-demo-dialog_show' : '' }}">
+  <view class="weui-mask" bindtap="toggleParticipants" />
+    <view class="weui-dialog__wrp" bindtap="toggleParticipants">
+        <view class="weui-dialog">
+            <view class="weui-dialog__bd">
+                <view class="weui-cells__title">添加参与人</view>
+                <view class="weui-cells weui-cells_after-title">
+                <view class="weui-cell">
+                    <view class="weui-cell__bd {{ptnrselecting ? 'namelist':''}}" bindtap="slctParticipants">
+                    <block wx:for="{{action.participats}}">
+                        <view wx:if="{{item.clicked}}" catchtap="cancelChoose" data-index="{{index}}"
+                        style="margin-left:20rpx;margin-bottom:10rpx;" class='nameblock'>{{item.name}}</view>
+                    </block>
+                    </view>
+                </view>
+                <view class="weui-search-bar__box weui-cell">
+                    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                    <input type="text" placeholder="手动添加" value="{{inputVal}}"
+                    bindconfirm="confirmInput"/>
+                </view>
+                <scroll-view scroll-y style="{{ptnrselecting ? 'height: 240rpx;':''}}" class="namelist">
+                    <block class="weui-cell" wx:for="{{memberlist}}">
+                    <view class='nameblock' bindtap="tabName" data-index="{{index}}" wx:if="{{!item.hide}}"
+                    style="margin-left:20rpx;margin-bottom:10rpx;{{item.clicked ? 'background:rgba(0,0,0,0.1)':''}}">
+                    {{item.name}}</view>
+                    </block>
+                </scroll-view>
+                </view>
+            </view>
+            <view class="weui-dialog__ft">
+                <view class="weui-dialog__btn weui-dialog__btn_default"
+                bindtap="toggleParticipants">取消</view>
+                <view class="weui-dialog__btn" bindtap="toggleParticipants">确定</view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<!--活动简介编辑-->
+<view class="weui-demo-dialog {{ editingintro ? 'weui-demo-dialog_show' : '' }}">
+  <view class="weui-mask" bindtap="toggleIntro" />
+    <view class="weui-dialog__wrp" bindtap="toggleIntro" >
+        <view class="weui-dialog">
+            <view class="weui-dialog__bd">
+                <input placeholder="输入活动名称"></input>
+            </view>
+            <view class="weui-dialog__ft">
+                <view class="weui-dialog__btn weui-dialog__btn_default" bindtap="closeDialog">取消</view>
+                <view class="weui-dialog__btn" bindtap="closeDialog">确定</view>
+            </view>
+        </view>
+    </view>
+</view>

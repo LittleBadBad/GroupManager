@@ -1,0 +1,17 @@
+.nameblock{
+  display: inline-block;
+  font-size: 30rpx;
+  border-radius: 25%;
+  padding:8rpx;
+  border:2rpx solid rgba(0,0,0,0.1);
+}
+
+.deletelogo{
+  position: relative;
+  display: inline-block;
+  left: -15rpx;
+  top: -20rpx;
+  width: 25rpx;
+  height: 25rpx;
+  background-size:cover;
+}

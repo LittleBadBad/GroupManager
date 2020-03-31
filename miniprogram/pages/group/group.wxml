@@ -3,13 +3,13 @@
   open-type="getUserInfo" 
   bindgetuserinfo="onGetUserInfo"
   class="groupinfo-avatar"
-  style="background-image: url({{mygroup.avatar}})"
+  style="background-image: url({{mygroup.avatarstatus==1 ? mygroup.avatarcache :(mygroup.avatarstatus ? '../../../../images/loadfail.jpg':'../../images/loading.gif')}})"
 ></view>
 <view class='groupsum'>群简介：{{mygroup.intro}}</view>
 <!--四大模块包含容器-->
 <view class="container">
   <view class='model' hover-class="model-clicked" bindtap="toMembers">成员</view>
-  <view class='model' hover-class="model-clicked">活动</view>
+  <view class='model' hover-class="model-clicked" bindtap="toActions">活动</view>
   <view class='model' hover-class="model-clicked">设备</view>
   <view class='model' hover-class="model-clicked">资金</view>
 </view>

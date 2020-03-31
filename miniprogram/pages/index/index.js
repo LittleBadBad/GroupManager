@@ -1,30 +1,31 @@
 //index.js
 const app = getApp()
-var util = require('../../utils/util.js');
+import { formatTime } from '../../utils/util.js';
 Page({
   data: {
     //../../images/blablabl.jpg
+
     authdialog:0,
     userInfo: {},
     userOpenid:'',
     groupavatar:'../../images/2.jpg',
     grouplistsearch:[],
-    grouplist: [{
-      gid:'1287299719',
-      avatarUrl:'../../images/user-unlogin.png',
-      name: '校学生会',
-      sum: '校会成立于1998年……',
-      num:200,
-      joined:0
-    },
-    {
-      gid:'108672146',
-      avatarUrl: '../../images/user-unlogin.png',
-      name:'小坏坏',
-      sum:'坏坏成员每天至少发20张色图才能完成业绩',
-      num:20,
-      joined:0
-    }
+     grouplist: [//{
+    //   gid:'1287299719',
+    //   avatarUrl:'../../images/user-unlogin.png',
+    //   name: '校学生会',
+    //   sum: '校会成立于1998年……',
+    //   num:200,
+    //   joined:0
+    // },
+    // {
+    //   gid:'108672146',
+    //   avatarUrl: '../../images/user-unlogin.png',
+    //   name:'小坏坏',
+    //   sum:'坏坏成员每天至少发20张色图才能完成业绩',
+    //   num:20,
+    //   joined:0
+    // }
     ],
 
     canvasImg:''
@@ -33,6 +34,10 @@ Page({
 
   //在此登录
   onLoad: function() {
+    wx.showLoading({
+      title: '加载中',
+      mask: true,
+    })
     if (!wx.cloud) {
       wx.showToast({
         title: 'erro',
@@ -52,7 +57,7 @@ onReady(){
   wx.cloud.callFunction({
   name:'login',
   success:res=>{
-    this.setData({userOpenid:res.result.openid})
+    this.setData({userOpenid:res.result.openid}) 
     //调取本地全局数据要加this
     console.log('userOpenid:',this.data.userOpenid)
     this.login(this.data.userOpenid)//请求登录数据
@@ -127,7 +132,7 @@ inputTyping: function (e) {
   })
   //群搜索请求
   wx.request({
-    url: 'http://st.titordong.cn/SearchTeam?ginfo='+inputV,
+    url: app.globalData.serverurl + 'SearchTeam?ginfo='+inputV,
     complete: (res) => {},
     fail: (res) => {},
     success: result => {
@@ -157,34 +162,39 @@ joinReq(e){
     icon:'loading'
   })
   var gid=this.data.grouplistsearch[e.currentTarget.id].gid
-  var time = util.formatTime(new Date())
-wx.request({
-  url: 'http://st.titordong.cn/Join_Team?pid='+this.data.userOpenid+'&&gid='+gid+'&&jointime='+time,
-  success: result => {
-    console.log('join',result)
-    var grouplist=this.data.grouplist
-    let i=grouplist.length
-    grouplist[i]=new Object()
-    grouplist[i]=this.data.grouplistsearch[e.currentTarget.id]
-    wx.downloadFile({
-      url:grouplist[i].avatar,
-      complete: (res) => {},
-      fail: (res) => {},
-      success: res => {
-        grouplist[i].avatar=res.tempFilePath
-        grouplist[i].done=true
-        wx.showToast({
-          title: '加入成功',
-          icon:'success'
-        })
-        this.setData({
-          tapsearch: 0,
-          grouplist:grouplist
-        })
-      },
-    })
-  },
-})
+  var time = formatTime(new Date())
+  wx.request({
+    url: app.globalData.serverurl+'Join_Team',
+    data:{
+      pid:this.data.userOpenid,
+      gid:gid,
+      jointime:time
+    },
+    success: result => {
+      console.log('join',result)
+      var grouplist=this.data.grouplist
+      let i=grouplist.length
+      grouplist[i]=new Object()
+      grouplist[i]=this.data.grouplistsearch[e.currentTarget.id]
+      wx.downloadFile({
+        url:grouplist[i].avatar,
+        complete: (res) => {},
+        fail: (res) => {},
+        success: res => {
+          grouplist[i].avatar=res.tempFilePath
+          grouplist[i].done=true
+          wx.showToast({
+            title: '加入成功',
+            icon:'success'
+          })
+          this.setData({
+            tapsearch: 0,
+            grouplist:grouplist
+          })
+        },
+      })
+    },
+  })
 },
 
 //群创建模块
@@ -208,8 +218,15 @@ doUpload: function () {
     sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
     success (res) {
       const src = res.tempFilePaths[0]
+      wx.showLoading({
+        mask: true,
+        title:'加载中'
+      })
       wx.navigateTo({
-        url: '../upload/upload?src='+src
+        url: '../upload/upload?src='+src,
+        success:res=>{
+          wx.hideLoading()
+        }
       })
     }
   })
@@ -218,18 +235,27 @@ doUpload: function () {
 //提交群信息
 subGroup(e){
 console.log(e)
-var time = util.formatTime(new Date())
+var time = formatTime(new Date())
+wx.showLoading({
+  title: '提交社团信息',
+  mask: true,
+})
 wx.request({
-  url: 'http://st.titordong.cn/CrtTeam?pid='+this.data.userOpenid+'&&gname='+e.detail.value.gname+'&&regtime='+time+'&&intro='+e.detail.value.gintro+'&&fund='+e.detail.value.fund,
+  url: app.globalData.serverurl+'CrtTeam?pid='+this.data.userOpenid+'&&gname='+e.detail.value.gname+'&&regtime='+time+'&&intro='+e.detail.value.gintro+'&&fund='+e.detail.value.fund,
   complete: (res) => {},
   fail: (res) => {},
   success:result=> {
+    wx.hideLoading()
+    wx.showLoading({
+      title: '上传社团头像',
+      mask: true,
+    })
     var gid=result.data.gid
     //上传群头像
     wx.uploadFile({
       filePath: this.data.groupavatar,
       name: 'cover',
-      url: 'http://st.titordong.cn/update_team_avatar',
+      url: app.globalData.serverurl+'update_team_avatar',
       complete: (res) => {},
       fail: (res) => {},
       formData: {
@@ -239,6 +265,7 @@ wx.request({
         'content-type': 'multipart/form-data'
       },
       success:result=> {
+        wx.hideLoading()
         console.log('uploadresult',result)
         wx.showToast({
           title: '创建成功',
@@ -250,7 +277,9 @@ wx.request({
         let i=grouplist.length
         grouplist[i]=new Object()
         grouplist[i].name=e.detail.value.gname
-        grouplist[i].avatar=filePath
+        grouplist[i].avatarUrl=result.data.url
+        grouplist[i].avatarcache=filePath
+        grouplist[i].avatarstatus=1
         grouplist[i].intro=e.detail.value.gintro
         grouplist[i].status='主席'
         grouplist[i].num=1
@@ -271,10 +300,13 @@ wx.request({
 login(pid){
     //登录请求
     wx.request({
-      url: 'http://st.titordong.cn/Login?pid='+pid,
+      url: app.globalData.serverurl+'Login?pid='+pid,
+      complete:res=>{wx.hideLoading()},
       fail:res=>{
         wx.showToast({
-          title: '登录失败，请重启小程序'
+          title: '登录失败，请重启小程序',
+          duration:2000,
+          icon:'none'
         })
       },
       success: logres => {
@@ -295,31 +327,46 @@ login(pid){
               //2.设置本地变量
               var grouplist=logres.data.grouplist
               app.globalData.grouplist=grouplist
-              this.setData({
-                grouplist:grouplist
-              })
-              var that=this
-              setTimeout(function(){that.setData({grouplist:grouplist})},300)
-              //下载群头像
-              for (let i = 0; i < grouplist.length; i++) {
+
+              if(!this.data.grouplist.length){
+                this.data.grouplist=new Array(grouplist.length)
+                for (let index = 0; index < this.data.grouplist.length; index++)
+                  this.data.grouplist[index]=new Object()
+              }
+              var that=this//0.3秒后执行setData
+              setTimeout(function(){that.setData({grouplist:grouplist})},300+20*grouplist.length)
+              for (let i = 0; i < grouplist.length; i++) {//下载群头像
                 var starttime=new Date().getTime()
-                wx.downloadFile({
-                  url: grouplist[i].avatar,
-                  complete: (res) => {},
-                  fail: (res) => {console.log(res)},
-                  success: (result) => {
-                    var endtime=new Date().getTime()
-                    var time=(endtime-starttime)/1000
-                    //console.log((endtime-starttime)/1000,'s')
-                    grouplist[i].done=1//加载完成
-                    grouplist[i].avatar=result.tempFilePath
-                    //console.log('downloadsuccess',grouplist[i].name)
-                    if(time > 0.3)
+                //console.log(this.data.grouplist[i].avatarcache)
+                if(!this.data.grouplist[i].avatarcache||this.data.grouplist[i].avatarUrl!=grouplist[i].avatarUrl){//若没有缓存或头像已更改则下载
+                  console.log('下载中')
+                  wx.downloadFile({
+                    url: grouplist[i].avatar,
+                    complete: (res) => {},
+                    fail: (res) => {
+                      grouplist[i].avatarstatus=-1
+                      console.log(res)
                       this.setData({
-                        grouplist:grouplist
+                        grouplist:grouplist,
                       })
-                  },
-                })
+                    },
+                    success: (result) => {
+                      console.log('已完成',i)
+                      var endtime=new Date().getTime()
+                      var time=(endtime-starttime)/1000
+                      grouplist[i].avatarstatus=1//加载完成
+                      grouplist[i].avatarcache=result.tempFilePath
+                      if(time > 0.3)//若加载时间大于0.3秒则重新setData
+                        this.setData({
+                          grouplist:grouplist
+                        })
+                    },
+                  })
+                }
+                else{
+                  grouplist[i].avatarcache=this.data.grouplist[i].avatarcache
+                  grouplist[i].avatarstatus=1
+                }
               }
             },
           })
@@ -373,4 +420,33 @@ compressImg(imgurl){
       },
     })
 },
+
+// blabla(){
+//   wx.uploadFile({
+//     filePath: imgnew[0],
+//     name: 'name',
+//     url: 'url',
+//     complete: (res) => {},
+//     fail: (res) => {},
+//     formData: {
+//       imglist:['1.jpg','2.jpg','3.jpg']
+//     },
+//     header: header,
+//     success: (result) => {
+//       if(result.data.flag){//第一张上传成功
+//         for (let i = 0; i < imgnew.length; i++)
+//           wx.uploadFile({
+//             filePath: imgrest[i+1],
+//             name: 'name',
+//             url: 'url',
+//             complete: (res) => {},
+//             fail: (res) => {},
+//             formData: '',
+//             header: header,
+//             success: (result) => {},
+//           })
+//       }
+//     },
+//   })
+// }
 })

@@ -34,10 +34,12 @@ Page({
       status:'部长',
       myauth:'1111',//权限
 
-      authfinal:'1111'//最终计算4位部门权限
+      auth:'1111'//最终计算4位部门权限
     },
 
     userOpenid:'',
+
+    memberlist:{}
   },
 
   /**
@@ -70,8 +72,12 @@ Page({
 
   onShow(){
     //请求社团部门
+    wx.showLoading({
+      title: '加载中',
+      mask:true
+    })
     wx.request({
-      url: 'http://st.titordong.cn/GetDivision',
+      url: 'http://st.titordong.cn/GetGroDiv',
       complete: (res) => {},
       data: {
         gid:this.data.mygroup.gid,
@@ -87,58 +93,77 @@ Page({
         //社团权限计算
         if (mygroup.status=='成员') {
           var authlist=new Array()
-          for (let i = 0; i < mydivlist.length; i++) {
-            let j = 0
-            for (; j < divisionlist.length; j++)
-              if(mydivlist[i].id==divisionlist[j].did)
-                break;
-            mydivlist[i].status=='部长' ? authlist[i]=divisionlist[j].auth : ''//本部门的权限
-            mydivlist[i].status=='副部' ? authlist[i]=divisionlist[j].authGroup : ''//本部门副部的权限
-          }
-          for (let i = 0; i < authlist.length; i++) {//遍历本人所有权限
-            for(let j = 0; j < 7; j++){//遍历7项权限
-              mygroup.auth[j] = String(Number(authlist[i][j]||mygroup.myauth[j]))
+          if(mydivlist)
+            for (let i in mydivlist) {
+              let j = 0
+              for (; j < divisionlist.length; j++)
+                if(mydivlist[i].id==divisionlist[j].id)
+                  break;
+              if(mydivlist[i].status=='部长')
+                authlist[i]=divisionlist[j].auth//本部门的权限
+              else if(mydivlist[i].status=='副部')
+              authlist[i]=(divisionlist[j].authgroup ? divisionlist[j].authgroup:'000000')//本部门副部的权限
+              else
+                authlist[i]='0000000'
+            
+              j = 0
+              for (; j < divisionlist.length; j++)
+                if(mydivlist[i].id==divisionlist[j].id)
+                  break;
+              mydivlist[i].status=='副部' ? mydivlist[i].authfinal=(divisionlist[j].authdiv ? divisionlist[j].authdiv : '0000') : ''
+              mydivlist[i].status=='部长' ? mydivlist[i].authfinal='1111' : ''
+              mydivlist[i].status=='部员' ? mydivlist[i].authfinal=mydivlist[i].myauth :''
+              mydivlist[i].intro=divisionlist[j].intro
             }
+          else{
+            mydivlist=''
+            divisionlist ? divisionlist='':''
           }
-          console.log(mygroup.auth)
-        }else if(mygroup.status=='副主席')
-          mygroup.auth=mygroup.viceauth
-        //部门权限计算
-        for (let i = 0; i < mydivlist.length; i++) {
-          let j = 0
-          for (; j < divisionlist.length; j++)
-            if(mydivlist[i].id==divisionlist[j].did)
-              break;
-          mydivlist[i].status=='副部' ? mydivlist[i].authfinal=divisionlist[j].authdiv : ''
-          mydivlist[i].status=='部长' ? mydivlist[i].authfinal='1111' : ''
-          mydivlist[i].intro=divisionlist[j].intro
+          console.log(mydivlist)
+          mygroup.auth=new Array()
+          for (let i = 0; i < 7; i++) 
+            mygroup.auth[i]=mygroup.myauth[i]
+          
+          for (let i = 0; i < authlist.length; i++) {//遍历本人所有权限
+            //console.log(authlist[i])
+            for(let j = 0; j < 6; j++){//遍历 7× 6√ 项权限；社团身份一旦为成员就无法拥有部长任命的权限
+              mygroup.auth[j] = String(Number(Number(authlist[i][j])||Number(mygroup.auth[j])))
+            }
+            //console.log(i,mygroup.auth)
+          }
+
+          //console.log(mygroup.auth)
         }
+        else if(mygroup.status=='副主席')
+          mygroup.auth=mygroup.viceauth
+        else
+          mygroup.auth='1111111'
+
         this.setData({
           mygroup:mygroup,
           divisionlist:divisionlist,
           mydivlist:mydivlist
         })
+        wx.hideLoading()
+        //console.log('my group auth',this.data.mygroup.auth)
+        //console.log('my division',this.data.divisionlist)
+      },
+    })
+
+    //请求社团成员列表
+    wx.request({
+      url: 'http://st.titordong.cn/GetTeam_Mem?gid='+this.data.mygroup.gid,
+      complete: (res) => {},
+      fail: (res) => {},
+      success: (result) => {
+        console.log('本社团成员',result)
+        var memberlist=result.data.memberlist
+        this.setData({memberlist:memberlist})
       },
     })
   },
 
-  toMembers(){
-    var url='../members/groupMember/groupMember'
-    wx.navigateTo({
-      /*页面跳转：打 ‘../’即可查看目录结构*/
-      url:url,
-      success: (res) => {
-        //console.log(url)
-        res.eventChannel.emit('getData',{
-          pid:this.data.userOpenid,
-          group:this.data.mygroup,
-          divisionlist:this.data.divisionlist,
-          mydivlist:this.data.mydivlist
-        })
-      },
-    })
-  },
-
+  //解散社团
   dismiss(){
     wx.showModal({
       cancelColor: 'green',
@@ -195,5 +220,42 @@ Page({
       },
       title: '群解散',
     })
+  },
+
+  //前往成员界面
+  toMembers(){
+    var url='../members/groupMember/groupMember'
+    wx.navigateTo({
+      /*页面跳转：打 ‘../’即可查看目录结构*/
+      url:url,
+      success: (res) => {
+        //console.log(url)
+        res.eventChannel.emit('getData',{
+          memberlist:this.data.memberlist,
+          pid:this.data.userOpenid,
+          group:this.data.mygroup,
+          divisionlist:this.data.divisionlist,
+          mydivlist:this.data.mydivlist
+        })
+      },
+    })
+  },
+
+  //前往活动界面
+  toActions(){
+    wx.navigateTo({
+      url: '../actions/index/index',
+      complete: (res) => {},
+      fail: (res) => {},
+      success: (result) => {
+        result.eventChannel.emit('getData',{
+          useropenid:this.data.userOpenid,
+          mygroup:this.data.mygroup,
+          mydivlist:this.data.mydivlist,
+          memberlist:this.data.memberlist
+        })
+      },
+    })
+
   }
 })

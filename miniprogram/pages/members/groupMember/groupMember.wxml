@@ -20,11 +20,11 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
 <!--成员列表-->
 <scroll-view scroll-y class='memberscontainer'>
   <view wx:for='{{memberlist}}' data-index="{{index}}" bindtap="{{changingterm ? 'slctMember':'clickmember'}}">
-    <view class="member" style="{{item.clicked ? 'background:rgb(0,0,0,0.1)':''}}">
+    <view wx:if="{{!item.removed}}"
+      class="member" style="{{item.clicked ? 'background:rgb(0,0,0,0.1)':''}}">
       <image class="memberavatar" src='{{item.avatar}}'></image>
         <view style="padding-left:20rpx">
           <view class="memtext">{{item.name}}{{index==0 ? "(我)" : ''}}</view>
-          <!--句内引号"，句外引号'-->
           <view class="memtext" style="color:grey;font-size:24rpx">{{item.statusshow}}</view>
         </view>
     </view>
@@ -33,10 +33,11 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
 
 <!--部门列表-->
 <scroll-view scroll-y class="divcontainer">
+    <view wx:if="{{!user_divlist}}">{{memberlist[0].statusdiv}}</view>
     <view wx:for="{{user_divlist}}" data-index="{{index}}" bindtap="toMyDiv">
         <view class="division" hover-class="division-hover">
             <view class="divtext" style="height:80rpx;font-size:30rpx;">{{item.name}}</view>
-            <view class="divtext" style="height:120rpx;font-size:24rpx;">{{item.intro}}</view>
+            <view class="divtext" style="height:120rpx;font-size:24rpx;color:grey">{{item.intro}}</view>
         </view>
     </view>
 </scroll-view>
@@ -62,7 +63,8 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
           style="width:380rpx" bindchange="bindStatusChange"
           bindtap="bindStatusTap" value="{{i}}"
           range="{{statuslist}}">
-            <view>{{statuslist[i]}}</view>
+            <view wx:if="{{i}}">{{statuslist[i]}}</view>
+            <view wx:else>{{memberchosed.status}}<text style="color:grey">   点击选择</text></view>
           </picker>
           <view wx:else>{{memberchosed.status}}</view>
         </view>
@@ -92,6 +94,7 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
       </form>
     </view>
 </view>
+
 <!--换届弹窗-->
 <view class="inherit"></view>
 

@@ -1,30 +1,33 @@
-<view class="btncontainer">
+<view wx:if="{{changingterm}}" bindtap="clickBack"
+class="btncontainer" style="justify-content:center">选择换届成员（点击返回）</view>
+<view wx:else class="btncontainer">
   <view class="buttonview"
     hover-class="btclicked"
-    bindtap="test">副部权限</view>
-  <view class="buttonview" wx:if="{{mydivision.status=='部长'}}"
+    bindtap="chgVcAuth">副部权限</view>
+  <view class="buttonview" wx:if="{{mydivision.status=='部长'}}" bindtap="clkChgTerm"
     hover-class="btclicked">换届</view>
-  <view class="buttonview" wx:if="{{Number(mydivision.authfinal[1])}}"
+  <view class="buttonview" wx:if="{{showrecruit}}" bindtap="clkRecruit"
     hover-class="btclicked">招募部员</view>
 </view>
 <view class='memberscontainer'>
-  <view wx:for='{{divmember}}' data-index="{{index}}" bindtap="clkDivMem">
-    <view class="member">
+  <view wx:for='{{divmember}}' data-index="{{index}}"
+    bindtap="{{changingterm ? 'slcMember':'clkDivMem'}}">
+    <view class="member" wx:if="{{item.division.joined}}"
+    style="{{item.clicked ? 'background:rgb(0,0,0,0.1)' : ''}}">
       <image class="memberavatar" src='{{item.avatar}}'></image>
         <view style="padding-left:20rpx">
           <view class="memtext">{{item.name}}{{item.pid == useropenid ? '（我）':''}}</view>
           <!--句内引号"，句外引号'-->
-          <view class="memtext" style="color:grey;font-size:24rpx">{{item.division.divstatus}}</view>
+          <view class="memtext" style="color:grey;font-size:24rpx">{{item.division.status}}</view>
         </view>
     </view>
   </view>
 </view>
 
 <!--个人信息弹窗-->
-<!--群创建弹窗-->
 <view class="{{ divmemclkd ? 'zan-dialog--show' : '' }}">
   <view class="zan-dialog__mask" bindtap="toggDivMem" />
-    <view class="zan-dialog__container" style="height:700rpx">
+    <view class="zan-dialog__container" style="height:850rpx;top:150rpx">
       <form >
         <view class="remove-block">
           <view wx:if="{{showremove}}" class="remove-text"
@@ -38,16 +41,74 @@
         <view class="infobar">联系方式：{{}}</view>
         <view class="infobar">
           <view>部门身份：</view>
-          <picker wx:if="{{showpicker}}"
-          style="width:380rpx" bindchange="bindStatusChange"
-          bindtap="bindStatusTap" value="{{i}}"
+          <picker wx:if="{{chgstatus}}"
+          style="width:380rpx;display:flex" bindchange="bindStatusChange" value="{{i}}"
           range="{{statuslist}}">
-            <view>{{i? statuslist[i]:divmemchosed.division.divstatus}}</view>
+            <view>{{i!='null'? statuslist[i]:divmemchosed.division.status}}
+              <text wx:if="{{i=='null'}}" style="color:grey">点击选择</text>
+            </view>
           </picker>
-          <view wx:else>{{divmemchosed.division.divstatus}}</view>
+          <view wx:else>{{divmemchosed.division.status}}</view>
         </view>
-        <scroll-view></scroll-view>
-        <button wx:if="{{showpicker}}" bindtap="chgStatus">确认更改</button>
+        <view class="infobar" style="height:260rpx">
+          <view>部员权限：</view>
+          <scroll-view scroll-y style="height:250rpx;width:330rpx;border:2rpx solid rgb(0,0,0,0.1)">
+            <view wx:for="{{authtype}}" wx:for-item="type" wx:for-index="i1">
+              <view wx:for="{{type.authlist}}" wx:for-index="i2"
+                wx:for-item="auth">
+                <view wx:if="{{!auth.disable&&(divmemchosed.division.status=='部员'?!auth.memdisable : 1)}}" data-i1="{{i1}}" data-i2="{{i2}}"
+                class="infobar" hover-class="btclicked" bindtap="clkMemAuth"
+                style="margin-bottom:2rpx;font-size:28rpx;height:55rpx;background:{{auth.clicked ? 'rgb(0,0,0,0.1)' : ''}}"
+                >{{auth.name}}</view>
+              </view>
+            </view>
+          </scroll-view>
+          <view wx:if="{{changeauth}}" style="font-size:24rpx;margin-left:10rpx;color:grey">点击授予</view>
+        </view>
+        <button wx:if="{{chgstatus}}" bindtap="alterInfo">确认更改</button>
+      </form>
+    </view>
+</view>
+
+<!--招募弹窗-->
+<view class="{{ recruitclkd ? 'zan-dialog--show' : '' }}">
+  <view class="zan-dialog__mask" bindtap="tglRecruit" />
+    <view class="zan-dialog__container" 
+      style="padding-left:30rpx;padding-right:30rpx;left:20rpx;height:700rpx">
+      <view style="font-size:26rpx;margin-top:20rpx;text-align:center">选择成员</view>
+      <scroll-view scroll-y
+      style="height:500rpx;margin-top:20rpx;border:2rpx solid rgb(0,0,0,0.1)">
+        <view wx:for="{{groupmember}}" data-index="{{index}}" bindtap="selectMem">
+          <view class="member" wx:if="{{!item.division.joined&&item.status=='成员'}}"
+            style="{{item.clicked ? 'background:rgb(0,0,0,0.1)':''}}">
+            <image class="memberavatar" src='{{item.avatar}}'></image>
+              <view style="padding-left:20rpx">
+                <view class="memtext">{{item.name}}</view>
+                <view class="memtext" style="color:grey;font-size:24rpx">{{item.statusshow}}</view>
+              </view>
+          </view>
+        </view>
+      </scroll-view>
+      <button style="margin-top:20rpx" bindtap="recruit">确认选择</button>
+    </view>
+</view>
+
+<!--权限弹窗-->
+<view class="{{ authclicked ? 'zan-dialog--show' : '' }}">
+  <view class="zan-dialog__mask" bindtap="toggleAuth" />
+    <view class="zan-dialog__container authview">
+      <form bindsubmit="authsubmit">
+        <scroll-view scroll-y class="authcontainer">
+          <view wx:for="{{authtype}}" wx:for-index="i"><!--身份列表改为权限类型-->
+            <view class="status" bindtap="clicktype" data-index="{{i}}">{{item.name}}</view>
+              <view wx:for="{{item.authlist}}" wx:for-index="j" wx:for-item="auth">
+                <view class="auth" data-index="{{j}}"
+style="{{(item.clicked ? 'position:relative;top:0rpx;':'position: absolute;top:-'+88*j+'rpx;')+(auth.clicked ? 'background:rgb(0,0,0,0.1);':'')+(auth.disable ? 'color:grey':'')}}"
+                bindtap="clkAuthItm">{{auth.name}}</view>
+              </view>
+          </view>
+        </scroll-view>
+        <button wx:if="{{mydivision.status=='部长'}}" form-type="submit">提交</button>
       </form>
     </view>
 </view>

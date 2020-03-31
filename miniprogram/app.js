@@ -25,6 +25,7 @@ App({
 
     this.globalData = {
       config: globalConfig,
+      serverurl:'http://st.titordong.cn/',
       userinfo:{},
       grouplist:{}
     }

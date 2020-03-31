@@ -59,6 +59,7 @@ page{
 
 .memtext{
   height: 50rpx;
+  width: 500rpx;
   display: flex;
   align-items: center;
 }
@@ -123,6 +124,7 @@ page{
   font-size: 30rpx;
   padding-top: 10rpx;
   padding-left: 40rpx;
+  padding-right: 40rpx;
 }
 
 .authview{

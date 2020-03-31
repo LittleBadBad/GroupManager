@@ -59,6 +59,20 @@
 					"pathName": "pages/members/division/division",
 					"query": "gid=13",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/actions/addaction/addaction",
+					"pathName": "pages/actions/addaction/addaction",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 3,
+					"name": "pages/actions/action/action",
+					"pathName": "pages/actions/action/action",
+					"query": "",
+					"scene": null
 				}
 			]
 		}

@@ -1,10 +1,42 @@
 // pages/members/divmember/divmember.js
+import { formatTime } from '../../../utils/util.js';
 Page({
 
   data: {
     mygroup:'',//我在本社团中的信息
     mydivision:'',//我在本部门中的信息
-    thisdivision:'',//本部门的信息
+
+    groupmember:'',
+
+    changingterm:0,
+
+    showremove:0,
+    showrecruit:'',//招募/移除权限
+    recruitclkd:0,
+
+    changeauth:0,//授予部员权限的权限
+    authclicked:0,
+    authtype:[
+      {
+        name:'社团管理权限',
+        authlist:[
+          {name:'社团值班发布',clicked:0},
+          {name:'活动信息管理',clicked:0},
+          {name:'社团资金管理',clicked:0},
+          {name:'社团设备信息管理',clicked:0},
+          {name:'社团设备借用管理',clicked:0},
+          {name:'社团成员增删',clicked:0,memdisable:1}]
+      },
+      {
+        name:'部门管理权限',
+        authlist:[
+          {name:'授予部员权限',clicked:0,memdisable:1},
+          {name:'部门成员增删',clicked:0,memdisable:1},
+          {name:'部门活动信息管理',clicked:0},
+          {name:'部门值班发布',clicked:0}
+        ]
+      }
+    ],
 
     goupid:'',
     ischairman:0,
@@ -12,10 +44,10 @@ Page({
     useropenid:'',    
 
     //部员弹窗
-    i:'',
+    i:'null',
     divmemchosed:'',
     divmemclkd:0,
-    showpicker:0,
+    chgstatus:0,//身份修改权限
     statuslist:['部长','副部','部员'],
   },
 
@@ -33,13 +65,24 @@ Page({
         mydivision:data.mydivision,
         divmember:data.divmember,
         mygroup:data.group,
-        useropenid:data.useropenid
+        useropenid:data.useropenid,
+        groupmember:data.memberlist,
+        showrecruit:Number(data.mydivision.authfinal[1]),
+        chgstatus:Number(data.group.auth[6]||data.mydivision.status=='部长'),
+        changeauth:Number(data.mydivision.auth[0])
       })
     })
   },
 
   onShow(){
     var divmember=this.data.divmember
+    var mydivision=this.data.mydivision
+    var authtype=this.data.authtype
+    if(mydivision.authgroup)
+      for (let i = 0; i < 6; i++) 
+        if(!Number(mydivision.auth[i]))
+          authtype[0].authlist[i].disable=1
+        
     for (let i = 0; i < divmember.length; i++) {
       if(divmember[i].pid==this.data.useropenid){
         var membert=divmember[i]
@@ -48,44 +91,492 @@ Page({
         break
       }
     }
-    this.setData({divmember:divmember})
+    //console.log(divmember)
+    this.setData({
+      divmember:divmember,
+      authtype:authtype
+    })
   },
 
+  //改变副部权限
+  chgVcAuth(){
+    var mydivision=this.data.mydivision
+    var authtype=this.data.authtype
+    if(mydivision.authgroup)
+      for (let i = 0; i < 6; i++) 
+        if(!Number(mydivision.auth[i]))
+          authtype[0].authlist[i].disable=1
+        else
+          authtype[0].authlist[i].clicked=Number(mydivision.authgroup[i])? 1:0
+        
+    if(mydivision.authdiv)
+      for (let i = 0; i < 4; i++)
+        if(Number(mydivision.authdiv[i]))
+          authtype[1].authlist[i].clicked=1
+        else
+          authtype[1].authlist[i].clicked=0
+    this.setData({
+      authtype:authtype,
+      authclicked:1
+    })
+  },
+
+  toggleAuth(){
+    this.setData({authclicked:0})
+  },
+
+  clicktype(e){
+    let i=e.currentTarget.dataset.index
+    var authtype=this.data.authtype
+    for (let j = 0; j < authtype.length; j++) {
+      j!=i ? authtype[j].clicked=false : authtype[j].clicked=!authtype[j].clicked
+    }
+    this.setData({
+      i:i,
+      authtype:authtype
+    })
+  },
+
+  clkAuthItm(e){
+    var authtype=this.data.authtype
+    var i=this.data.i
+    var j=e.currentTarget.dataset.index
+    //console.log(e,this.data.mydivision)
+    if(this.data.mydivision.status=='部长'&&!authtype[i].authlist[j].disable){
+      var flag = authtype[i].authlist[j].clicked
+      authtype[i].authlist[j].clicked=!flag
+      this.setData({//setData可即时更改前端画面
+        authtype:authtype
+      })
+    }else
+    wx.showToast({
+      title: '没有权限',
+      duration: 2000,
+      icon: 'none',
+    })
+  },
+  
+  authsubmit(){
+    var mydivision=this.data.mydivision
+    var authtype=this.data.authtype
+    var auth1=new String()
+    var auth2=new String()
+    for (let i = 0; i < 6; i++) 
+      authtype[0].authlist[i].clicked ? auth1+='1':auth1+='0'
+    for (let i = 0; i < 4; i++) 
+      authtype[1].authlist[i].clicked ? auth2+='1':auth2+='0'
+
+    if(mydivision.authgroup!=auth1||mydivision.authdiv!=auth2)
+      wx.request({
+        url: 'https://st.titordong.cn/Change_A',
+        data: {
+          operator:0,
+          type:0,
+          id:mydivision.id,
+          auth1:auth1,
+          auth2:auth2
+        },
+        success: (result) => {
+          if(result.data.flag){
+            mydivision.authgroup=auth1
+            mydivision.authdiv=auth2
+          }
+          this.setData({
+            mydivision:mydivision,
+            authclicked:0
+          })
+          wx.showToast({
+            title: '更改成功！',
+            duration: 2000,
+            icon: 'success',
+            mask: true,
+          })
+        },
+      })
+  },
+
+  //点击换届
+  clkChgTerm(){
+    this.setData({
+      changingterm:1
+    })
+  },
+
+  clickBack(){
+    this.setData({
+      changingterm:0
+    })
+  },
+
+  slcMember(e){
+    var i=e.currentTarget.dataset.index
+    var divmemchosed=this.data.divmember[i]
+    var mydivision=this.data.mydivision
+    
+    if(i){
+      divmemchosed.clicked=1
+      this.setData({divmember:this.data.divmember})
+      wx.showModal({
+        cancelColor: 'green',
+        cancelText: '取消',
+        complete: (res) => {},
+        confirmColor: 'red',
+        confirmText: '确认',
+        content: '将部门转让此人？',
+        fail: (res) => {},
+        showCancel: true,
+        success: (result) => {
+          if(result.confirm)
+            wx.request({
+              url: 'http://st.titordong.cn/Grow_Division',
+              data: {
+                did:mydivision.id,
+                pid1:divmemchosed.pid,
+                pid2:this.data.useropenid
+              },
+              success: (result) => {
+                if(result.data.flag)
+                  wx.showToast({
+                    title: '换届成功',
+                    duration: 2000,
+                    icon: 'success',
+                    success: (res) => {
+                      mydivision.status='部员'
+                      divmemchosed.division.status='部长'
+                      divmemchosed.clicked=0
+                      this.data.divmember[0].division.status='部员'
+                      this.setData({
+                        changingterm:0,
+                        divmember:this.data.divmember
+                      })
+                    },
+                  })
+              },
+            })
+        },
+        title: '部门换届',
+      })
+    }
+    else{
+      wx.showToast({
+        title: '请选择其他人',
+        duration: 2000,
+        icon: 'none',
+        success: (res) => {},
+      })
+    }
+  },
+  
+  //招募部员
+  clkRecruit(){
+    this.setData({
+      recruitclkd:1
+    })
+  },
+
+  tglRecruit(){
+    this.setData({
+      recruitclkd:0
+    })
+  },
+
+  selectMem(e){
+    //console.log(e)
+    var i=e.currentTarget.dataset.index
+    var member=this.data.groupmember[i]
+    member.clicked=!member.clicked
+    this.setData({groupmember:this.data.groupmember})
+  },
+
+  recruit(){
+    var groupmember=this.data.groupmember
+    var mydivision=this.data.mydivision
+    var divmember=this.data.divmember
+    for (let i = 0; i < groupmember.length; i++) {
+      if(groupmember[i].clicked)
+      var time = util.formatTime(new Date())
+        wx.request({
+          url: 'http://st.titordong.cn/Join_Division',
+          complete: (res) => {},
+          data: {
+            pid:groupmember[i].pid,
+            did:mydivision.id,
+            jointime:time
+          },
+          success: (result) => {
+            if(result.data.flag){
+              let newdivstatus=new Object()
+              newdivstatus.auth='0000'
+              newdivstatus.id=mydivision.id
+              newdivstatus.name=mydivision.name
+              newdivstatus.status='部员'
+              newdivstatus.jointime=time
+              groupmember[i].divisionlist[groupmember[i].divisionlist.length]=newdivstatus
+              groupmember[i].division=newdivstatus
+              groupmember[i].division.joined=1
+              groupmember[i].clicked=0
+
+              var flag=0
+              for (var index = 0; index < divmember.length; index++) //index退出时大小为length
+                if(divmember[index].pid==groupmember[i].pid)
+                 flag=groupmember[i].pid
+              if(!flag)
+                divmember[index]=groupmember[i]
+              console.log(flag)
+              console.log('index',index)
+              console.log('部员列表',divmember)
+              this.setData({
+                groupmember:groupmember,
+                divmember:divmember,
+                recruitclkd:0
+              })
+              wx.showToast({
+                title: '招募成功',
+                duration: 2000,
+                icon: 'success',
+              })
+            }
+          },
+        })
+      
+    }
+  },
+
+  //点击部门成员
   clkDivMem(e){
     let i = e.currentTarget.dataset.index
     var divmemchosed=this.data.divmember[i]
+    var authtype=this.data.authtype
+    var mydivision=this.data.mydivision
+
+    //auth1 auth2为将要显示的权限
+    var auth1=this.data.mydivision.auth//默认选择的人为部长
+    var auth2='1111'
+
+    if(divmemchosed.division.status=='部员'){
+      auth1=divmemchosed.myauth?divmemchosed.myauth:'000000',//❗成员的社团权限暂未获取
+      auth2=divmemchosed.division.auth?divmemchosed.division.auth:'0000'
+    }
+    else if(divmemchosed.division.status=='副部'){
+      auth1=mydivision.authgroup?mydivision.authgroup:'000000',
+      auth2=mydivision.authdiv?mydivision.authdiv:'0000'
+    }
+    console.log(auth1,' ',auth2)
+    for (let j = 0; j < 6; j++)//
+      if(Number(auth1[j]))
+        authtype[0].authlist[j].clicked=1
+      else
+        authtype[0].authlist[j].clicked=0
+    for (let j = 0; j < 4; j++)
+      if(Number(auth2[j]))
+        authtype[1].authlist[j].clicked=1
+      else
+        authtype[1].authlist[j].clicked=0
+    if (mydivision.status=='副部'&&mydivision.authfinal[0]) {//0号权限：授予部员权限
+      for (let j = 0; j < 6; j++) //副部长没有的权限不能授予部员
+        if(!Number(auth1[j]))
+          authtype[0].authlist[j].memdisable=1
+      for (let j = 0; j < 4; j++)
+        if(!Number(auth2[j]))
+          authtype[1].authlist[j].memdisable=1
+    }
+
     this.setData({
+      authtype:authtype,
       divmemchosed:divmemchosed,
-      divmemclkd:1
+      divmemclkd:1,
+      showremove:this.data.showrecruit&&i!=0&&divmemchosed.division.status!='部长',
+      changeauth:i&&divmemchosed.division.status=='部员'&&mydivision.authfinal[0],
+      i:'null'
     })
     /**
      *1. 本人在社团中的权限 
      *2. 本人在本部门中的权限
      *3. 本部门副部的权限
      **/
+    //console.log('i',i)
     var mygroup=this.data.mygroup
     var mydivision=this.data.mydivision
     //1. 不可修改本人，2. 主席能改 部长 副部长 部员 3. 部长能改 副主席 部员 4. 其余人不具备此权限
-    if(i==0 ? 0:(mygroup.ischairman||Number(mygroup.auth[6])||Number(mydivision.status=='部长'))){
-      var statuslist=['部长','副部','部员']
-      if(Number(mygroup.auth[6])||mygroup.ischairman)
-        statuslist=['部长','副部','部员']
-      else
+    if(i&&(mygroup.ischairman||Number(mygroup.auth[6])||Number(mydivision.status=='部长'))){
+      var statuslist=['','副部']
+      if(mydivision.status=='部长')
         statuslist=['副部','部员']
+      else if((Number(mygroup.auth[6])||mygroup.ischairman))
+        statuslist=['部长','副部','部员']
       this.setData({
-        showpicker:1,
+        chgstatus:1,
         statuslist:statuslist
       })
     }
+    else
+      this.setData({
+        chgstatus:0
+      })
 
   },
+
+/**              数据初始化
+ * 入口\             |
+ * 入口——>过程——>出口——>
+ * 入口/
+ *   
+ * 数据初始化
+ *     |         / 出口
+ * 入口——>过程——>——出口
+ *               \ 出口
+ */
 
   toggDivMem(){
     this.setData({
       divmemclkd:0
     })
-  }
+  },
 
+  bindStatusChange(e){
+    console.log(e.detail.value)
+    var i=e.detail.value
+    this.setData({i:i})
+  },
+
+  clkMemAuth(e){
+    //console.log(e)
+    if(this.data.changeauth){
+      var i1=e.currentTarget.dataset.i1
+      var i2=e.currentTarget.dataset.i2
+      var authtype=this.data.authtype
+      authtype[i1].authlist[i2].clicked=!authtype[i1].authlist[i2].clicked
+      this.setData({authtype:authtype})
+    }else{
+      wx.showToast({
+        title: '无法更改',
+        duration: 2000,
+        icon: 'none',
+      })
+    }
+  },
+
+  removeMem(){
+    var groupmember=this.data.groupmember
+    var divmember=this.data.divmember
+    var divmemchosed=this.data.divmemchosed
+    var mydivision=this.data.mydivision
+    wx.showModal({
+      cancelColor: 'green',
+      cancelText: '取消',
+      complete: (res) => {},
+      confirmColor: 'red',
+      confirmText: '确认',
+      content: '确认移除此部员？',
+      fail: (res) => {},
+      showCancel: true,
+      success: (result) => {
+        if(result.confirm)
+          wx.request({
+            url: 'http://st.titordong.cn/DRemove',
+            complete: (res) => {},
+            data: {
+              pid:divmemchosed.pid,
+              did:mydivision.id
+            },
+            success: (result) => {
+              if(result.data.flag){
+                for (let i = 0; i < divmemchosed.divisionlist.length; i++) 
+                  if(divmemchosed.divisionlist[i].id==mydivision.id)
+                    divmemchosed.divisionlist[i].dismissed = 1
+                divmemchosed.division.joined=0
+                
+                console.log('部员列表',divmember)
+
+                this.setData({
+                  divmember:divmember,
+                  groupmember:groupmember,
+                  divmemclkd:0})
+                wx.showToast({
+                  title: '移除成功',
+                  icon:'success',
+                  duration:2000
+                })
+              }
+            },
+          })
+      },
+      title: '移除部员',
+    })
+  },
+
+  alterInfo(){
+    var i=this.data.i
+    var authtype=this.data.authtype
+    var statuslist=this.data.statuslist
+    var mydivision=this.data.mydivision
+    var divmemchosed=this.data.divmemchosed
+    var mygroup=this.data.mygroup
+
+    var auth1='',auth2=''
+    for (let j = 0; j < 6; j++)
+      auth1+=String(Number(authtype[0].authlist[j].clicked))
+    
+    for (let j = 0; j < 4; j++)
+      auth2+=String(Number(authtype[1].authlist[j].clicked))
+
+    //1. 改变身份
+    if(i!='null'&&statuslist[i]!=divmemchosed.division.status)
+      wx.request({
+        url: 'https://st.titordong.cn/Change_P',
+        data: {
+          type:0,
+          pid:divmemchosed.pid,
+          id:mydivision.id,
+          status:statuslist[i]
+        },
+        success: (result) => {
+          if(result.data.flag)
+            divmemchosed.division.status=statuslist[i]
+          this.setData({
+            divmember:this.data.divmember
+          })
+          wx.showToast({
+            title: '身份更改成功',
+            duration: 2000,
+            icon: 'success',
+          })
+        },
+      })
+
+    //2.改变权限
+    //NULL
+    console.log(auth1,' ',auth2)
+    if(divmemchosed.myauth!=auth1||divmemchosed.division.auth!=auth2)
+      wx.request({
+        url: 'http://st.titordong.cn/change_DA',
+        complete: (res) => {},
+        data: {
+          did:mydivision.id,
+          gid:mygroup.gid,
+          pid:divmemchosed.pid,
+          auth1:auth1,
+          auth2:auth2
+        },
+        success: (result) => {
+          if(result.data.flag){
+            divmemchosed.auth=auth1
+            divmemchosed.division.auth=auth2
+            this.setData({
+              divmember:this.data.divmember
+            })
+            wx.showToast({
+              title: '更改成功',
+              complete: (res) => {},
+              duration: 2000,
+              fail: (res) => {},
+              icon: 'success',
+              success: (res) => {},
+            })
+          }
+        },
+      })
+  }
 }) 
 
 //  test(){

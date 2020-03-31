@@ -1,0 +1,32 @@
+/* pages/actions/action/action.wxss */
+@import'../index/index.wxss';
+@import'../addaction/addaction.wxss';
+page{
+  background-color: #FFFFFF;
+}
+
+image{
+  margin: 4px 0;
+}
+
+.buttonbar{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+}
+
+button{
+  display: inline-block;
+  width: 180px;
+}
+
+.weui-demo-dialog{
+  visibility:hidden;
+  opacity:0;
+  transition:opacity .3s;
+}
+.weui-demo-dialog_show{
+  visibility:visible;
+  opacity:100;
+}

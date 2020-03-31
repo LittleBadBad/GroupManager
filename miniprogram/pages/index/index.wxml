@@ -28,12 +28,13 @@
 
   <!--社团列表-->
   <scroll-view scroll-y="true" class="groupcontainer">
-  <view wx:if="{{!grouplist.length}}" style="display:flex;justify-content:center;">尚未添加任何社团</view>
+  <view wx:if="{{!grouplist.length}}" style="display:flex;justify-content:center;">
+  尚未添加任何社团</view>
     <view wx:for="{{grouplist}}" data-index='{{index}}' bindtap='toMyGroup'>
       <view wx:if="{{!item.dismissed}}" class="groupinfo" hover-class="groupinfo-hover">
         <view 
            class="userinfo-avatar"
-           style="background-image: url({{item.done ? item.avatar : '../../../../images/loading.gif'}})"
+           style="background-image: url({{item.avatarstatus==1 ? item.avatarcache :(item.avatarstatus ? '../../../../images/loadfail.jpg':'../../images/loading.gif')}})"
         >
         </view>
           <view>
@@ -107,7 +108,7 @@
       <form bindsubmit='subGroup'>
             <image class="img" src='{{groupavatar}}'/>
             <view
-             style="display:flex;justify-content:center;margin:10rpx auto;width:200rpx"
+             style="display:flex;justify-content:center;margin:10rpx auto;width:200rpx;color:grey;font-size:30rpx"
              hover-class="uploadgroup"
              bindtap="doUpload">上传社团头像</view>
           <!--单输入行-->

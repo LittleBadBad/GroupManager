@@ -1,11 +1,12 @@
 <scroll-view scroll-y class="divcontainer">
+  <view wx:if="{{!divisionlist}}">暂无部门</view>
   <view wx:for="{{divisionlist}}" data-index="{{index}}" bindtap="clickDiv">
-    <view class="division" hover-class="division-hover">
-      <view class="divtext" style="font-size:30rpx;">{{item.dname}}</view>
+    <view class="division" hover-class="division-hover" wx:if="{{!item.deleted}}">
+      <view class="divtext" style="font-size:30rpx;">{{item.name}}</view>
       <view class="divtext" style="font-size:24rpx;color:grey">{{item.intro}}</view>
     </view>
   </view>
-  <view class="division" wx:if="{{ischairman}}"
+  <view class="division" wx:if="{{mygroup.ischairman}}"
   style="display:flex;align-items:center;padding-left:20rpx;color:grey" hover-class="division-hover" bindtap="clickAdd">添加...</view>
 </scroll-view>
 
@@ -16,9 +17,8 @@
       <form bindsubmit="submitDivision">
         <view class="infocard">部门名：
           <input name="name" bindfocus="nameFocus" bindblur="nameBlur"
-          value="{{editing ? divchosed.dname : (nameinputing ? '' : '例：公关部')}}"
-          readonly="{{editing}}"
-          style="{{nameinputing ? '' : 'color:grey'}}"></input>
+          style="{{nameinputing ? '':'color:grey'}}"
+          value="{{editing ? divchosed.name : (nameinputing ? '' : '例：公关部')}}"></input>
           <view wx:if="{{nameunfilled}}" style="color:red;font-size:24rpx">未填写</view>
         </view>
         <view class="infocard">部门简介：
@@ -29,14 +29,14 @@
         </view>
         <view class="infocard">部长：
           <picker
-          range="{{memberlist}}"
+          range="{{candidates}}"
           value="{{i}}" bindchange="chgMinister"
           range-key="{{'name'}}">
-            <view wx:if="{{i}}" style="display:flex;align-items:center">
-              <image class="memberavatar" src="{{memberlist[i].avatar}}"/>
-              <view>{{memberlist[i].name}}</view>
+            <view style="display:flex;align-items:center">
+              <image class="memberavatar" src="{{i!='null' ? candidates[i].avatar : minister.avatar}}"/>
+              <view style="margin-left:10rpx">{{i!='null' ? candidates[i].name : minister.name}}</view>
+              <view wx:if="{{i=='null'}}" style="color:grey;margin-left:10rpx">点击选择</view>
             </view>
-            <view wx:else>点击选择</view>
           </picker>
         </view>
         <view class="infocard" style="height:300rpx">权限：
@@ -49,7 +49,7 @@
             </view>
           </scroll-view>
         </view>
-        <button form-type="submit">确认</button>
+        <button disabled="{{subdisable}}" form-type="submit">{{subdisable ? '提交中':'确认'}}</button>
       </form>
     </view>
 </view>
@@ -58,23 +58,26 @@
 <view class="{{ divclicked ? 'zan-dialog--show' : '' }}">
       <view class="zan-dialog__mask" bindtap="toggleDiv" />
       <view class="zan-dialog__container"
-      style="height:700rpx;width:600rpx;">
-          <view bindtap="editDiv" wx:if="{{ischairman}}"
-          style="text-align:right;font-size:24rpx;color:grey;margin-right:16rpx">编辑</view>
-          <view style="text-align:center;margin-top:40rpx">{{divchosed.dname}}</view>
-          <view style="margin:40rpx 30rpx;font-size:24rpx">简介：{{divchosed.intro}}</view>
+      style="height:700rpx;width:600rpx;padding-left:30rpx;padding-right:30rpx">
+          <view wx:if="{{mygroup.ischairman}}" bindtap="dissmiss"
+          style="text-align:right;font-size:24rpx;color:grey;margin-right:16rpx">解散</view>
+          <view style="text-align:center;margin-top:40rpx">{{divchosed.name}}</view>
           <scroll-view scroll-y
-          style="height:400rpx;background:rgb(0,0,0,0.1);border:2rpx solid rgb(0,0,0,0.3)">
+          style="margin-top:20rpx;height:100rpx;font-size:24rpx;">
+          简介：{{divchosed.intro}}</scroll-view>
+          <scroll-view scroll-y
+          style="margin-top:30rpx;height:350rpx;background:rgb(0,0,0,0.1);border:2rpx solid rgb(0,0,0,0.3)">
             <view wx:if="{{!divmember}}">该部门尚无部员</view>
             <view wx:for="{{divmember}}">
               <view class="member">
                 <image class="memberavatar" src='{{item.avatar}}'></image>
-                  <view style="font-size:30rpx">
-                    <view style="margin auto auto">{{item.name}}</view>
-                    <view style="margin auto auto">{{item.division.divstatus}}</view>
-                  </view>
+                <view style="font-size:25rpx;padding-left:10rpx">
+                  <view style="margin auto auto">{{item.name}}</view>
+                  <view style="margin auto auto">{{item.division.status}}</view>
+                </view>
               </view>
             </view>
           </scroll-view>
+          <button bindtap="editDiv" wx:if="{{mygroup.ischairman}}">编辑</button>
       </view>
 </view>

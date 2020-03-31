@@ -48,6 +48,7 @@ page{
 
 .memberavatar{
   margin-left: 10rpx;
+  margin-right: 10rpx;
   width:100rpx;
   height:100rpx;
   border-radius: 50%;
@@ -55,6 +56,7 @@ page{
 
 .memtext{
   height: 50rpx;
+  width: 480rpx;
   display: flex;
   align-items: center;
 }
@@ -71,6 +73,7 @@ page{
   background: rgba(0, 0, 0, 0.4);
   display: none;
 }
+
 .zan-dialog__container {
   position: fixed;
   bottom: 400rpx;
@@ -119,4 +122,47 @@ page{
   font-size: 30rpx;
   padding-top: 10rpx;
   padding-left: 40rpx;
+}
+
+/*副部权限弹窗*/
+.status{
+  position: relative;
+  z-index: 2;
+  border-top:rgb(0,0,0,0.1) solid 2rpx;
+  border-bottom:rgb(0,0,0,0.1) solid 2rpx;
+  height: 100rpx;
+  background: white;
+  margin-bottom:4rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 20rpx;
+}
+
+.authview{
+  height:850rpx;
+  bottom:200rpx;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  }
+
+.authcontainer{
+  width: 630rpx;
+  height: 750rpx;
+  background: #f6f6f6;
+  border:rgb(0,0,0,0.1) solid 2rpx;
+}
+
+.auth{
+  z-index: 1;
+  width: 540rpx;
+  height: 80rpx;
+  background: white;
+  border:rgb(0,0,0,0.1) solid 2rpx;
+  margin-bottom:4rpx;
+  margin-left: 20rpx;
+  padding-left: 20rpx;
+  display: flex;
+  align-items: center;
+  transition: all 0.5s ease;
 }

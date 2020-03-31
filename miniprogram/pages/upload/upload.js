@@ -48,6 +48,7 @@ Page({
       } else {
         //先压缩
         var that=this
+        console.log(this)
         wx.getImageInfo({
           src: path,
           success: res =>{
@@ -67,7 +68,7 @@ Page({
             //----------绘制图形并取出图片路径--------------
             var ctx = wx.createCanvasContext('canvas',that)
             ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
-            ctx.draw(false, function(){
+            ctx.draw(false, setTimeout(function(){
                  wx.canvasToTempFilePath({
                      canvasId: 'canvas',
                      width:canvasWidth,//规定好canvas宽和长，否则直接打印保存图片会横向压缩
@@ -82,24 +83,19 @@ Page({
                           groupavatar:res.tempFilePath
                         })
                         wx.navigateBack({
-                          complete: (res) => {},
-                          delta: 1,
-                          fail: (res) => {},
-                          success: (res) => {
-                          },
+                          delta: 1
                         })
                      },
                      fail: res=>{
                          console.log('canvas',res)
                     }
                 },that)
-            })//留一定的时间绘制canvas
+            },100))//留一定的时间绘制canvas
           },
           fail: res=>{
           console.log('getImageInfo',res.errMsg)
           },
         })
-
         // wx.previewImage({
         //   current: '', // 当前显示图片的 http 链接
         //   urls: [path] // 需要预览的图片 http 链接列表
