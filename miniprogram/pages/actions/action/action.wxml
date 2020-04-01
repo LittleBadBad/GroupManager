@@ -60,7 +60,7 @@
 <view class="weui-demo-dialog {{ editingname ? 'weui-demo-dialog_show' : '' }}">
   <view class="weui-mask" bindtap="toggleName" />
     <view class="weui-dialog__wrp" bindtap="toggleName">
-        <view class="weui-dialog">
+        <view class="weui-dialog" catchtap="stopEvent">
             <view class="weui-dialog__bd">
                 <input placeholder="点击输入活动名称"></input>
             </view>
@@ -76,7 +76,7 @@
 <view class="weui-demo-dialog {{ editingparticipants ? 'weui-demo-dialog_show' : '' }}">
   <view class="weui-mask" bindtap="toggleParticipants" />
     <view class="weui-dialog__wrp" bindtap="toggleParticipants">
-        <view class="weui-dialog">
+        <view class="weui-dialog" catchtap="stopEvent">
             <view class="weui-dialog__bd">
                 <view class="weui-cells__title">添加参与人</view>
                 <view class="weui-cells weui-cells_after-title">
@@ -115,7 +115,7 @@
 <view class="weui-demo-dialog {{ editingintro ? 'weui-demo-dialog_show' : '' }}">
   <view class="weui-mask" bindtap="toggleIntro" />
     <view class="weui-dialog__wrp" bindtap="toggleIntro" >
-        <view class="weui-dialog">
+        <view class="weui-dialog" catchtap="stopEvent">
             <view class="weui-dialog__bd">
                 <input placeholder="输入活动名称"></input>
             </view>

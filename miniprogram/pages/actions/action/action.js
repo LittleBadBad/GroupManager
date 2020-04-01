@@ -98,8 +98,20 @@ Page({
   },
 
   editAction(){
+    var action2=new Object()
+    var action=this.data.action
+    action2.type=action.type
+    action2.id=action.id
+    action2.imglist=action.imglist
+    action2.intro=action.intro
+    action2.location=action.location
+    action2.name=action.name
+    action2.participats=action.participats
+    action2.unit=action.unit
+    action2.date=action.date
     this.setData({
-      editing:1
+      editing:1,
+      action2:action2
     })
   },
 
@@ -129,7 +141,12 @@ Page({
     }
   },
 
-  toggleName(){
+  toggleName(e){
+    var id=e.currentTarget.id
+    var action2=this.data.action2
+    if(id){
+      action2.name=
+    }
     this.setData({editingname:0})
   },
 
