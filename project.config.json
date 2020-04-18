@@ -73,6 +73,13 @@
 					"pathName": "pages/actions/action/action",
 					"query": "",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/actions/addduty/addduty",
+					"pathName": "pages/actions/addduty/addduty",
+					"query": "",
+					"scene": null
 				}
 			]
 		}

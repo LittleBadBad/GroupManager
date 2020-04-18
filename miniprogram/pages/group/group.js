@@ -96,9 +96,11 @@ Page({
           if(mydivlist)
             for (let i in mydivlist) {
               let j = 0
+
               for (; j < divisionlist.length; j++)
                 if(mydivlist[i].id==divisionlist[j].id)
                   break;
+            
               if(mydivlist[i].status=='部长')
                 authlist[i]=divisionlist[j].auth//本部门的权限
               else if(mydivlist[i].status=='副部')
@@ -106,33 +108,36 @@ Page({
               else
                 authlist[i]='0000000'
             
-              j = 0
-              for (; j < divisionlist.length; j++)
-                if(mydivlist[i].id==divisionlist[j].id)
-                  break;
+              // j = 0
+              // for (; j < divisionlist.length; j++)
+              //   if(mydivlist[i].id==divisionlist[j].id)
+              //     break;
               mydivlist[i].status=='副部' ? mydivlist[i].authfinal=(divisionlist[j].authdiv ? divisionlist[j].authdiv : '0000') : ''
               mydivlist[i].status=='部长' ? mydivlist[i].authfinal='1111' : ''
               mydivlist[i].status=='部员' ? mydivlist[i].authfinal=mydivlist[i].myauth :''
               mydivlist[i].intro=divisionlist[j].intro
+            }else{
+              mydivlist=''
+              divisionlist ? divisionlist='':''
             }
-          else{
-            mydivlist=''
-            divisionlist ? divisionlist='':''
-          }
-          console.log(mydivlist)
-          mygroup.auth=new Array()
-          for (let i = 0; i < 7; i++) 
+            console.log(mydivlist)
+            mygroup.auth=new Array()
+            for (let i = 0; i < 7; i++) 
             mygroup.auth[i]=mygroup.myauth[i]
-          
-          for (let i = 0; i < authlist.length; i++) {//遍历本人所有权限
+            for (let i = 0; i < authlist.length; i++) {//遍历本人所有权限
             //console.log(authlist[i])
             for(let j = 0; j < 6; j++){//遍历 7× 6√ 项权限；社团身份一旦为成员就无法拥有部长任命的权限
               mygroup.auth[j] = String(Number(Number(authlist[i][j])||Number(mygroup.auth[j])))
             }
-            //console.log(i,mygroup.auth)
+            //最终权限：
+            //部门[i]：mydivlist[i].authfinal
+            //授予部员权限0，部门成员增删1，部门活动信息管理2，部门值班发布3
+            
+            //社团：mygroup.auth
+            //社团值班发布0，社团活动信息管理1，社团资金管理2，社团设备信息管理3
+            //社团设备借用管理4，社团成员增删5，部长任命6
+            
           }
-
-          //console.log(mygroup.auth)
         }
         else if(mygroup.status=='副主席')
           mygroup.auth=mygroup.viceauth

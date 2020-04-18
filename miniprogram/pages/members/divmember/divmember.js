@@ -67,10 +67,11 @@ Page({
         mygroup:data.group,
         useropenid:data.useropenid,
         groupmember:data.memberlist,
-        showrecruit:Number(data.mydivision.authfinal[1]),
+        showrecruit:Number(data.mydivision.authfinal ? data.mydivision.authfinal[1]:0),
         chgstatus:Number(data.group.auth[6]||data.mydivision.status=='部长'),
         changeauth:Number(data.mydivision.auth[0])
       })
+      console.log('dm',data.divmember)
     })
   },
 

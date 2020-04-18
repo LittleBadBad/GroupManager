@@ -1,0 +1,49 @@
+  /*表格*/
+  .table {
+    border: 1px solid darkgrey;
+    
+   }
+   .tr {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	height: 3rem;
+	align-items: center;
+   }
+   .td {
+	width:40%;
+	justify-content: center;
+	text-align: center;
+   }
+   .bg-w{
+	background: snow;
+   }
+   .bg-g{
+	background: #E6F3F9;
+   }
+   .th {
+	width: 40%;
+	justify-content: center;
+	background: #3366FF;
+	color: #fff;
+	display: flex;
+	height: 3rem;
+	align-items: center;
+   }
+   .buttonbar{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+  }
+  button{
+    display: inline-block;
+    width: 180px;
+  }
+
+  .notlike{
+	  background: yellow;
+  }
+  .like{
+	  background: yellowgreen;
+  }

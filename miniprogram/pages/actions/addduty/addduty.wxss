@@ -1,0 +1,48 @@
+.weui-demo-dialog{
+    visibility:hidden;
+    opacity:0;
+    transition:all .3s;
+}
+.weui-demo-dialog_show{
+  visibility:visible;
+    opacity:1;
+}
+
+scroll-view{
+  height: 200px;
+}
+
+.timecontainer{
+  border-radius: 5px;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 15px;
+  margin-bottom: 2px;
+}
+
+.timepicker{
+  border:1px solid grey;
+  border-radius: 5px;
+  width: 80px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hover{
+  background: rgba(0,0,0,0.1);
+}
+
+.buttonbar{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+}
+button{
+  display: inline-block;
+  width: 180px;
+}

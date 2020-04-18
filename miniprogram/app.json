@@ -8,7 +8,11 @@
     "pages/members/division/division",
     "pages/actions/index/index",
     "pages/actions/action/action",
+    "pages/actions/addvacant/addvacant",
+    "pages/actions/dutychart/dutychart",
+    "pages/actions/arrange/arrange",
     "pages/actions/addaction/addaction",
+    "pages/actions/addduty/addduty",
     "pages/me/me",
     "pages/info/info"
   ],

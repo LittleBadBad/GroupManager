@@ -34,15 +34,20 @@
     <view style="display:flex;justify-content:flex-end;padding-right:20rpx">
       <view style="height:80rpx;width:150rpx;">值班活动</view>
       <view style="height:80rpx;width:80rpx;">
-        <view class="logo"
+        <view class="logo" bindtap="addDuty"
         style="background-image: url('../../../images/add.png');" hover-class="hover"></view>
       </view>
     </view>
   </view>
   <scroll-view scroll-y class="body">
-    <view class="weui-media-box weui-media-box_text" style="background:white">
-      <view class="weui-media-box__title weui-media-box__title_in-text">标题一</view>
-      <view class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</view>
+    <view class="weui-media-box weui-media-box_text" style="background:white"
+     data-index="{{index}}" bindtap="toDuty" wx:for="{{dutylist}}">
+      <view class="weui-media-box__title weui-media-box__title_in-text">
+        {{item.unit+' '+item.sln.name}}<text style="color:rgba(0,0,0,.5);font-size:14px;">    {{item.status == 1 ? '已发布，点击参与' : '进行中，点击查看'}}</text><icon style="margin-right:5px" size="13" type="clear" data-index="{{index}}" catchtap="deleteSln"/>
+      </view>
+      <view class="weui-media-box__desc">
+        <view>日期：{{item.date}}</view>
+      </view>
     </view>
   </scroll-view>
 </view>
