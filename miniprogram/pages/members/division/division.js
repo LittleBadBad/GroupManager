@@ -1,6 +1,6 @@
 // pages/division/division.js
-var util = require('../../../utils/util.js');
-
+import { formatTime } from '../../../utils/util.js';
+const app = getApp()
 Page({
 
   data: {
@@ -36,18 +36,25 @@ Page({
       {name:'群设备借用管理',clicked:0},
       {name:'群成员增删',clicked:0}],
 
-
+    count:0
   },
 
+  loadPageData(){
+    var memberlist=this.data.memberlist
+    var candidates=new Array()
+    var n=0
+    for (let index in memberlist)
+      memberlist[index].status=='成员' ? candidates[n++]=memberlist[index]:''
+    this.setData({
+      candidates:candidates,
+      count:this.data.count++
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    //console.log(options)
-    // this.setData({
-    //   groupid:options.gid,
-    //   ischairman:options.ischairman=='true'
-    // })
+
     const eventChannel = this.getOpenerEventChannel()
     var _this=this
     eventChannel.on('acceptdiv&mem', function(data) {//上一个页面的数据放本页面调用
@@ -57,20 +64,14 @@ Page({
        divisionlist:data.divisionlist,
        memberlist:data.memberlist
      })
+     _this.loadPageData()
+     console.log(_this.data.candidates)
     })
-    //console.log(this.data.mygroup)
-    // console.log(this.data.divisionlist)
   },
 
   onShow(){
-    var memberlist=this.data.memberlist
-    var candidates=new Array()
-    var n=0
-    for (let index = 0; index < memberlist.length; index++)
-      memberlist[index].status=='成员' ? candidates[n++]=memberlist[index]:''
-    this.setData({
-      candidates:candidates
-    })
+    if(this.data.count)
+      this.loadPageData()
   },
 
   clickAdd(){
@@ -150,7 +151,7 @@ Page({
     var candidates=this.data.candidates
     var minister=this.data.minister
 
-    var time = util.formatTime(new Date())
+    var time = formatTime(new Date())
     if(e.detail.value.name=='例：公关部')//未填写部门名
       this.setData({
         nameunfilled:1
@@ -170,7 +171,7 @@ Page({
       console.log(candidates[i],minister)
       if(divisionnew.name!=divchosed.name||divisionnew.intro!=divchosed.intro||divisionnew.auth!=divchosed.auth||(i!='null'&&candidates[i].pid!=minister.pid))//四项有一项做过修改
         wx.request({
-          url: 'http://st.titordong.cn/CrtDivision',
+          url: app.globalData.serverurl+'CrtDivision',
           data:{
             gid:this.data.mygroup.gid,
             did:divisionnew.id ? divisionnew.id:'',
@@ -291,7 +292,6 @@ editDiv(){
   for (let index = 0; index < divchosed.auth.length; index++)//被选部门的权限查看
     divchosed.auth[index]=='1' ? authlist[index].clicked = 1 :''
 
-  //console.log('i',this.data.i)
   this.setData({
     divchosed:divchosed,
     authlist:authlist,
@@ -316,7 +316,7 @@ dissmiss(){
       var mygroup=this.data.mygroup
       if(result.confirm)
         wx.request({
-          url: 'http://st.titordong.cn/DeleteDivision',
+          url: app.globalData.serverurl+'DeleteDivision',
           complete: (res) => {},
           data: {
             did:divchosed.id,

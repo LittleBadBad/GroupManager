@@ -1,47 +1,29 @@
 <!--index.wxml-->
 <view class="container">
 
-  <!-- 用户 -->
-  <!-- <view class="userinfo">
-    <view 
-      open-type="getUserInfo" 
-      bindgetuserinfo="onGetUserInfo"
-      class="userinfo-avatar"
-      style="background-image: url({{avatarUrl}})"
-    ></view>
-    <view>
-      <button class="userinfo-nickname"
-      hover-class="userinfo-nickname-h"
-      wx:if="{{!authorized}}" 
-     open-type="getUserInfo"
-     bindgetuserinfo="authorize">点击授权</button>
-      <view class="userinfo-nickname"
-            wx:if="{{authorized}}">{{username}}</view>
-      </view>
-  </view> -->
-
   <!--按钮-->
   <view class="buttoncontainer">
-    <button class='groupbutton1' bindtap="groupSearch">社团查找</button>
-    <button class='groupbutton2' bindtap='groupCreate'>创建社团</button>
+    <button class='groupbutton1' bindtap="groupSearch" disabled="{{!signed}}">社团查找</button>
+    <button class='groupbutton2' bindtap='groupCreate' disabled="{{!signed}}">创建社团</button>
   </view>
 
   <!--社团列表-->
   <scroll-view scroll-y="true" class="groupcontainer">
   <view wx:if="{{!grouplist.length}}" style="display:flex;justify-content:center;">
-  尚未添加任何社团</view>
-    <view wx:for="{{grouplist}}" data-index='{{index}}' bindtap='toMyGroup'>
-      <view wx:if="{{!item.dismissed}}" class="groupinfo" hover-class="groupinfo-hover">
-        <view 
-           class="userinfo-avatar"
-           style="background-image: url({{item.avatarstatus==1 ? item.avatarcache :(item.avatarstatus ? '../../../../images/loadfail.jpg':'../../images/loading.gif')}})"
-        >
-        </view>
-          <view>
-              <view class="line1">
+    尚未添加任何社团
+  </view>
+  <view wx:for="{{grouplist}}" wx:key="gid" data-index='{{index}}' wx:key="gid" bindtap='toMyGroup'>
+    <view wx:if="{{!item.dismissed}}" class="groupinfo" hover-class="groupinfo-hover">
+      <view 
+          class="userinfo-avatar"
+          style="background-image: url({{item.avatarstatus==1 ? item.avatarcache :(item.avatarstatus ? '../../../../images/loadfail.jpg':'../../images/loading.gif')}})"
+      >
+      </view>
+        <view>
+            <view class="line1">
                 <view class="groupname">{{item.name}}</view>
                 <view class="gnum" wx:if='{{item.num}}'>{{item.num}}人</view>
-              </view>
+            </view>
               <view class="groupsum">{{item.intro}}</view>
         </view>
       </view>
@@ -77,7 +59,7 @@
         <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
             <scroll-view scroll-y class='groupsearchcontainer'>
             <!--wx:for-index="i"规定索引值；{{i}}-->
-                <view wx:for="{{grouplistsearch}}" wx:for-index="i">
+                <view wx:for="{{grouplistsearch}}" wx:for-index="i" wx:key="gid">
                   <view class="groupinfo">
                       <view 
                         open-type="getUserInfo" 
@@ -91,7 +73,7 @@
                       </view>
                       <button wx:if="{{!item.joined}}" size="mini"
                       style="font-size:24rpx" 
-                      bindtap="joinReq" id="{{i}}">申请加入</button>
+                      bindtap="joinReq" data-i="{{i}}">申请加入</button>
                       <button wx:else size="mini" style="font-size:24rpx" disabled>已加入</button>
                   </view>
                 </view>

@@ -2281,15 +2281,15 @@ page {
   
   .zan-dialog__container {
 	position: fixed;
-	bottom: 400rpx;
+	bottom: 200px;
 	width: 650rpx;
-	min-height: 600rpx;
-	left: 50rpx;
+	min-height: 300px;
+	left: 25px;
 	background: #f8f8f8;
 	transform: translateY(300%);/*不点击时在300%处隐藏，点击后0处出现*/
 	transition: all 0.4s ease;/*出现和消失均用时0.4s*/
 	z-index: 12;
-	border-radius: 20rpx;
+	border-radius: 10px;
 	box-shadow: 0px 3px 3px 2px gainsboro;
   }
   .zan-dialog--show .zan-dialog__container {
@@ -2312,3 +2312,41 @@ page {
 	  margin-bottom: 0;
 	  display: flex;
   }
+
+  /*表格*/
+  .table {
+    border: 1px solid darkgrey;
+   }
+   .tr {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	height: 3rem;
+	align-items: center;
+   }
+   .td {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	-webkit-box-flex:1;
+	-webkit-flex:1;
+	flex:1;
+   }
+   .bg-w{
+	background: snow;
+   }
+   .bg-g{
+	background: #E6F3F9;
+   }
+   .th {
+	width: 40%;
+	justify-content: center;
+	background: #3366FF;
+	color: #fff;
+	display: flex;
+	height: 3rem;
+	align-items: center;
+   }

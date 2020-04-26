@@ -8,6 +8,7 @@ Page({
     data: {
         useropenid:'',
         duty:'',
+        memberlist:'',
 
         vacant:[],
         limit:8,
@@ -15,7 +16,48 @@ Page({
         modelist:["复选模式","单选-凑合","单选-可以"],
         i:0,
 
-        note:''
+        note:'',
+        count:0
+    },
+
+    loadPageData(){
+        wx.showLoading({
+            title: '加载上次提交中',
+            mask: true,
+          })
+          var duty=this.data.duty
+          wx.request({
+            url: app.globalData.serverurl+'v3/GetmeDuty',
+            complete: (res) => {wx.hideLoading()},
+            data: {
+                pid:this.data.useropenid,
+                duid:duty.duid
+            },
+            fail: (res) => {},
+            header: {
+              'content-type':'application/x-www-form-urlencoded'
+            },
+            method: 'POST',
+            success: (result) => {
+                console.log(result)
+                if(result.data.flag){
+                    var vacant=result.data.vacant
+                    var vacantlocal=[]
+                    var count=0
+                    if(vacant){
+                      for(let i in duty.sln.timelist.start){
+                          vacantlocal[i]=new Array()
+                          for(let j in duty.date)
+                              vacantlocal[i][j]=vacant[count++]
+                      }
+                    this.setData({
+                        vacant:vacantlocal,
+                        count:this.data.count+1
+                    })
+                  }
+                }
+            },
+          })
     },
 
     /**
@@ -34,48 +76,19 @@ Page({
                 useropenid:data.useropenid,
                 duty:data.duty,
                 vacant:vacant,
-                limit:limit*0.5
+                limit:limit*0.5,
+
+                memberlist:data.memberlist
             })
+            that.loadPageData()
         })
     },
     onShow(){
-        wx.showLoading({
-          title: '加载上次提交中',
-          mask: true,
-        })
-        var duty=this.data.duty
-        wx.request({
-          url: app.globalData.serverurl+'v3/GetmeDuty',
-          complete: (res) => {wx.hideLoading()},
-          data: {
-              pid:this.data.useropenid,
-              duid:duty.duid
-          },
-          fail: (res) => {},
-          header: {
-            'content-type':'application/x-www-form-urlencoded'
-          },
-          method: 'POST',
-          success: (result) => {
-              console.log(result)
-              if(result.data.flag){
-                  var vacant=result.data.vacant
-                  var vacantlocal=[]
-                  var count=0
-                  if(vacant){
-                    for(let i in duty.sln.timelist.start){
-                        vacantlocal[i]=new Array()
-                        for(let j in duty.date)
-                            vacantlocal[i][j]=vacant[count++]
-                    }
-                  this.setData({vacant:vacantlocal})
-                }
-              }
-          },
-        })
+        if(this.data.count)
+            this.loadPageData()
     },
     addVacant(e){
-        //console.log(e)
+        console.log(e)
         var i=e.currentTarget.dataset.index
         var j=e.currentTarget.dataset.item
         var vacant=this.data.vacant
@@ -163,6 +176,21 @@ Page({
                   })
               },
             })
+    },
+
+    toArrange(){
+        wx.navigateTo({
+          url: '../arrange/arrange',
+          complete: (res) => {},
+          fail: (res) => {},
+          success: (result) => {
+            result.eventChannel.emit('getData',{
+                duty:this.data.duty,
+
+                memberlist:this.data.memberlist
+            })
+          },
+        })
     }
 })
 // var text='Hello world, Hello world';

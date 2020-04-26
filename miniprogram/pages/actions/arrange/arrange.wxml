@@ -1,2 +1,87 @@
-<!--pages/actions/arrange/arrange.wxml-->
-<text>pages/actions/arrange/arrange.wxml</text>
+<view class="page__bd">
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell ">
+            <view class="weui-cell__hd">
+                <view class="weui-label">每班人数</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker range="{{[1,2,3,4,5,6,7,8,9]}}" bindchange="chgPerclass"
+                class="weui-input" style="{{perclass? '':'color:grey'}}">{{perclass? perclass:'点击选择'}}</picker>
+            </view>
+        </view>
+        <view class="weui-cell">
+            <view class="weui-cell__hd">
+                <view class="weui-label">每人班数</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker class="weui-input" style="{{perperson? '':'color:grey'}}"
+                range="{{[1,2,3,4,5,6,7,8,9]}}" bindchange="chgPerperson">{{perperson? perperson:'点击选择'}}</picker>
+            </view>
+        </view>
+    </view>
+    <view class="weui-cells__title">参与人</view>
+    <scroll-view style="height:150px" scroll-y>
+        <view wx:for="{{pidlist}}">
+            <view class="member">
+                <view class="memberinfo" data-item="{{item}}" bindtap="viewVacant">
+                    <image class="memberavatar" src='{{item.avatar}}'></image>
+                    <view>{{item.name}}</view>
+                </view>
+                <picker bindchange="chgPClassNUm"
+                range="{{[1,2,3,4,5,6,7,8,9]}}" data-index="{{index}}">
+                    {{item.num ? item.num+'班':''}}
+                </picker>
+            </view>
+        </view>
+    </scroll-view>
+    <view class="table">
+        <view class="tr bg-w">
+            <view class="th"></view>
+            <block wx:for="{{duty.date}}">
+                <view class="th" style="font-size:12px">{{item}}</view>
+            </block>
+        </view>
+        <block wx:for="{{duty.sln.timelist.start}}" wx:for-index="i" wx:for-item="item1">
+            <view class="tr bg-g" wx:if="{{i % 2 == 0}}">
+                <view class="td">{{item1}}-{{duty.sln.timelist.end[i]}}</view>
+                <block wx:for="{{duty.date}}" wx:for-index="j" wx:for-item="item2">
+                    <view class="td" data-index="{{i}}" data-item="{{j}}">
+                        <picker wx:if="{{!chart[i][j].show}}" range="{{[1,2,3,4,5,6,7,8,9]}}" 
+                        data-index="{{i}}" data-item="{{j}}" bindchange="chgClassNum"
+                        class="colorblock {{vacant[i][j]==2 ? 'like':''}}{{vacant[i][j]==1 ? 'notlike':''}}">
+                        {{num_per_class[i][j]}}
+                        </picker>
+                        <view wx:if="{{chart[i][j].show}}" wx:for="{{chart[i][j].namelist}}" wx:for-item="item3"
+                        style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">
+                            <view>
+                                {{item3}}
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </view>
+            <view class="tr" wx:else>
+                <view class="td">{{item1}}-{{duty.sln.timelist.end[i]}}</view>
+                <block wx:for="{{duty.date}}" wx:for-index="j" wx:for-item="item2">
+                    <view class="td">
+                        <picker wx:if="{{!chart[i][j].show}}" range="{{[1,2,3,4,5,6,7,8,9]}}" 
+                        data-index="{{i}}" data-item="{{j}}" bindchange="chgClassNum"
+                        class="colorblock {{vacant[i][j]==2 ? 'like':''}}{{vacant[i][j]==1 ? 'notlike':''}}">
+                        {{num_per_class[i][j]}}
+                        </picker>
+                        <view wx:if="{{chart[i][j].show}}" wx:for="{{chart[i][j].namelist}}" wx:for-item="item3"
+                         style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">
+                            <view>
+                                {{item3}}
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </view>
+        </block>
+    </view>
+</view>
+<view class="buttonbar">
+    <button bindtap="arrange">{{arrangecount ? '重新':''}}排班</button>
+    <button wx:if="{{arrangecount}}" bindtap="publish">发布</button>
+</view>

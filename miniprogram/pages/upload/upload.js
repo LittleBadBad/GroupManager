@@ -27,7 +27,8 @@ Page({
         mask: 'rgba(0,0,0,0.8)',
         lineWidth: 1
       },
-    }
+    },
+    from:''
   },
   touchStart (e) {
     this.cropper.touchStart(e)
@@ -39,6 +40,7 @@ Page({
     this.cropper.touchEnd(e)
   },
   getCropperImage () {
+    var that=this
     this.cropper.getCropperImage(function (path, err) {
       if (err) {
         wx.showModal({
@@ -47,55 +49,103 @@ Page({
         })
       } else {
         //先压缩
-        var that=this
-        console.log(this)
-        wx.getImageInfo({
+        wx.compressImage({
           src: path,
-          success: res =>{
-            //---------利用canvas压缩图片--------------
-            // var ratio = 2;
-            var canvasWidth
-            var canvasHeight
-            if(res.width>132)
-              canvasWidth =canvasHeight = 132 //图片原始长宽
-            else
-              canvasWidth =canvasHeight=res.width
-            // while (canvasWidth > 132 || canvasHeight > 132){// 保证宽高在132以内
-            //     canvasWidth = Math.trunc(res.width / ratio)
-            //     canvasHeight = Math.trunc(res.height / ratio)
-            //     ratio++;
-            // }
-            //----------绘制图形并取出图片路径--------------
-            var ctx = wx.createCanvasContext('canvas',that)
-            ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
-            ctx.draw(false, setTimeout(function(){
-                 wx.canvasToTempFilePath({
-                     canvasId: 'canvas',
-                     width:canvasWidth,//规定好canvas宽和长，否则直接打印保存图片会横向压缩
-                     height:canvasHeight,
-                     destWidth: canvasWidth,
-                     destHeight: canvasHeight,
-                     success: res=>{
-                        console.log('canvasres',res.tempFilePath)//最终图片路径
-                        let pages=getCurrentPages();
-                        let prevPage=pages[pages.length-2]
-                        prevPage.setData({
-                          groupavatar:res.tempFilePath
-                        })
-                        wx.navigateBack({
-                          delta: 1
-                        })
-                     },
-                     fail: res=>{
-                         console.log('canvas',res)
-                    }
-                },that)
-            },100))//留一定的时间绘制canvas
-          },
-          fail: res=>{
-          console.log('getImageInfo',res.errMsg)
+          complete: (res) => {},
+          fail: (res) => {},
+          quality: 1,
+          success: (result1) => {
+            console.log(that.data.from)
+            let pages=getCurrentPages();
+            let prevPage=pages[pages.length-2]
+            if(that.data.from=='group'){
+              prevPage.setData({
+                groupavatar:result1.tempFilePath
+              })
+              wx.navigateBack({
+                delta: 1,
+              })
+            }else if(that.data.from=='me'){
+              var userinfo=app.globalData.userinfo
+              wx.uploadFile({
+                filePath: result1.tempFilePath,
+                name: 'cover',
+                url: app.globalData.serverurl+'update_me_avatar',
+                header: {
+                  'content-type': 'multipart/form-data'
+                },
+                formData: {
+                  pid:userinfo.userOpenid
+                },
+                complete:res=>{wx.hideLoading()},
+                fail:res=>{
+                  wx.showToast({
+                    title: res.errMsg,
+                    duration: 2000,
+                    mask: true,
+                  })
+                },
+                success: result => {
+                  if(result.statusCode==200){
+                    console.log(result)
+                    app.globalData.userinfo.avatarUrl = result1.tempFilePath
+                    wx.showToast({
+                      title: '修改成功！',
+                      icon:'success'
+                    })
+                    wx.navigateBack({
+                      delta: 1,
+                    })
+                  }
+                },
+              })
+            }
           },
         })
+        // var that=this
+        // console.log(this)
+        // wx.getImageInfo({
+        //   src: path,
+        //   success: res =>{
+        //     //---------利用canvas压缩图片--------------
+        //     // var ratio = 2;
+        //     var canvasWidth
+        //     var canvasHeight
+        //     if(res.width>132)
+        //       canvasWidth =canvasHeight = 132 //图片原始长宽
+        //     else
+        //       canvasWidth =canvasHeight=res.width
+
+        //     var ctx = wx.createCanvasContext('canvas',that)
+        //     ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
+        //     ctx.draw(false, setTimeout(function(){
+        //          wx.canvasToTempFilePath({
+        //              canvasId: 'canvas',
+        //              width:canvasWidth,//规定好canvas宽和长，否则直接打印保存图片会横向压缩
+        //              height:canvasHeight,
+        //              destWidth: canvasWidth,
+        //              destHeight: canvasHeight,
+        //              success: res=>{
+        //                 console.log('canvasres',res.tempFilePath)//最终图片路径
+        //                 let pages=getCurrentPages();
+        //                 let prevPage=pages[pages.length-2]
+        //                 prevPage.setData({
+        //                   groupavatar:res.tempFilePath
+        //                 })
+        //                 wx.navigateBack({
+        //                   delta: 1
+        //                 })
+        //              },
+        //              fail: res=>{
+        //                  console.log('canvas',res)
+        //             }
+        //         },that)
+        //     },100))//留一定的时间绘制canvas
+        //   },
+        //   fail: res=>{
+        //   console.log('getImageInfo',res.errMsg)
+        //   },
+        // })
         // wx.previewImage({
         //   current: '', // 当前显示图片的 http 链接
         //   urls: [path] // 需要预览的图片 http 链接列表
@@ -123,6 +173,7 @@ Page({
     cropperOpt.boundStyle.color = config.getThemeColor()
     this.setData({ cropperOpt })
     if (option.src) {
+      this.data.from=option.from
       cropperOpt.src = option.src
       this.cropper = new WeCropper(cropperOpt)
         .on('ready', (ctx) => {

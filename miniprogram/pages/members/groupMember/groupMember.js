@@ -1,5 +1,6 @@
 // miniprogram/pages/members/groupMember.js
 import { formatTime } from '../../../utils/util.js';
+const app = getApp()
 Page({
 
   /**
@@ -53,11 +54,15 @@ Page({
 
     memberlist:[],
 
-    count:-1
+    count:0
   },
 
   //对成员列表，部门列表初始化
   init(memberlist){
+    wx.showLoading({
+      title: '加载数据中',
+      mask: true,
+    })
     for (let i in memberlist) {
       memberlist[i].clicked = 0
       //拼接 要显示的身份 字符串
@@ -70,7 +75,6 @@ Page({
             n++==0 ?  '' : (memberlist[i].statusshow += '，')
             memberlist[i].statusshow += (memberlist[i].divisionlist[j].name + memberlist[i].divisionlist[j].status)
           }
-        
       }
       memberlist[i].statusshow=='成员' ? memberlist[i].statusdiv='尚未添加部门' : 
       (memberlist[i].statusshow=='主席'||memberlist[i].statusshow=='副主席' ?
@@ -82,6 +86,7 @@ Page({
         memberlist[0]=membert
       }
     }
+
     this.setData({
       memberlist:memberlist
     })
@@ -91,16 +96,34 @@ Page({
       this.setData({user_divlist:this.data.mydivlist})
     else
       this.setData({user_divlist:this.data.divisionlist})
+    this.setData({count:this.data.count+1})
+    wx.hideLoading()
   },
 
+  reloadMembers(){
+    wx.request({
+      url: app.globalData.serverurl+'GetTeam_Mem?gid='+this.data.mygroup.gid,
+      complete: (res) => {wx.hideLoading()},
+      fail: (res) => {
+        wx.showToast({
+          title: res.errMsg,
+          duration: 2000,
+          mask: true,
+        })
+      },
+      success: (result) => {
+        var memberlist=result.data.memberlist
+        console.log('本社团成员',memberlist)
+        this.init(memberlist)
+        this.setData({
+          memberlist:memberlist,
+        })
+      },
+    })
+  },
+
+
   onLoad: function (options) {
-    // this.setData({
-    //   groupid:options.gid,
-    //   useropenid:options.pid,
-    //   ischairman:options.ischairman=='true',
-    //   auth:options.auth
-    // })
-    //console.log('groupmember onload',this.data.ischairman)
     const eventChannel = this.getOpenerEventChannel()
     var that=this
     eventChannel.on('getData',function(data){
@@ -120,10 +143,9 @@ Page({
   },
 
   onShow(){
-    var count=++this.data.count
     var memberlist=this.data.memberlist
-    if(count){
-      this.init(memberlist)
+    if(this.data.count){
+      this.reloadMembers()
     }
   },
 
@@ -134,7 +156,7 @@ Page({
     var mydivision = this.data.user_divlist[index]
     var memberlist = this.data.memberlist
     var divisionlist=this.data.divisionlist
-    var divmember=new Array()
+    var divmember=[]
     let n=0
     for (let i in memberlist) //部员列表生成
       if(memberlist[i].status=='成员')
@@ -152,14 +174,13 @@ Page({
       }
     //console.log(divmember)
     // ?gid='+this.data.groupid + '&&ischairman='+this.data.ischairman
-
       wx.navigateTo({
         url: '../divmember/divmember',
         success: (result) => {
           result.eventChannel.emit('acceptdiv&divMem',
           {
-            mydivision: mydivision,
-            divmember:divmember,
+            mydivision: mydivision,//
+            divmember:divmember,//部员
             useropenid: this.data.useropenid,
             group:this.data.mygroup,
             memberlist:memberlist
@@ -213,7 +234,7 @@ Page({
       success: (res) => {
         if(res.confirm)
           wx.request({
-            url: 'http://st.titordong.cn/GRemove',
+            url: app.globalData.serverurl+'GRemove',
             complete: (res) => {},
             data: {
               gid:this.data.mygroup.gid,
@@ -256,7 +277,7 @@ Page({
     //在此变更此人社团身份
     if(i!=''&&memberchosed.status!=statuslist[i])
       wx.request({
-        url: 'https://st.titordong.cn/Change_P',
+        url: app.globalData.serverurl+'Change_P',
         data: {
           type:1,
           pid:memberchosed.pid,
@@ -307,28 +328,28 @@ Page({
 
   },
 
-  bindStatusChange(e){
-    console.log(e)
-  },
-
-  toggleMember(){
-    this.setData({
-      memberclicked:0
-    })
-  },
-  bindStatusChange(e){
-    console.log(e)
-    this.setData({
-      i: e.detail.value
-  })
-  },
-
-  // bindStatusTap(e){
+  // bindStatusChange(e){
   //   console.log(e)
   // },
 
+  toggleMember(){
+    this.setData({
+      memberclicked:0,
+      i:null,
+    })
+  },
+  bindStatusChange(e){
+    //console.log(e)
+    this.setData({
+      i: e.detail.value
+    })
+  },
+
   //点击权限按钮
   clickauth(){
+    var divisionlist=this.data.divisionlist
+    var mygroup=this.data.mygroup
+    var statuslist=new Array()
     var authlist1=[
       {name:'社团值班发布',clicked:0},
       {name:'活动信息管理',clicked:0},
@@ -338,20 +359,21 @@ Page({
       {name:'社团成员增删',clicked:0},
       {name:'部长任命',clicked:0}]
 
-    var statuslist=new Array()
+    
     statuslist[0]=new Object()
     statuslist[0].name='副主席'
     statuslist[0].clicked=false
-    statuslist[0].id=this.data.mygroup.gid
+    statuslist[0].id=mygroup.gid
     statuslist[0].authlist=authlist1
-    for (let index in this.data.mygroup.viceauth) 
-      if(Number(this.data.mygroup.viceauth[index]))
-        statuslist[0].authlist[index].clicked=1
+    for (let i in mygroup.viceauth) 
+      if(Number(mygroup.viceauth[i]))
+        statuslist[0].authlist[i].clicked=1
     
-    for (let i in this.data.divisionlist) {
+    for (let i in divisionlist) {
+      i=Number(i)
       statuslist[i+1]=new Object()
-      statuslist[i+1].name=this.data.divisionlist[i].name
-      statuslist[i+1].id=this.data.divisionlist[i].id
+      statuslist[i+1].name=divisionlist[i].name
+      statuslist[i+1].id=divisionlist[i].id
       statuslist[i+1].clicked=false
       statuslist[i+1].authlist=[
         {name:'社团值班发布',clicked:0},
@@ -361,11 +383,13 @@ Page({
         {name:'社团设备借用管理',clicked:0},
         {name:'社团成员增删',clicked:0}]
       //console.log(statuslist[i+1])
-      for (let index = 0; index < 6 ; index++)
-        if(Number(this.data.divisionlist[i].auth[index]))
-          statuslist[i+1].authlist[index].clicked = 1
+      console.log(divisionlist[i])
+      for (let j = 0; j < 6 ; j++)
+        if(Number(divisionlist[i].auth[j]))
+          statuslist[i+1].authlist[j].clicked = 1
+      //console.log(statuslist)
     }
-    
+    //console.log(statuslist)
     this.setData({
       statuslist:statuslist,
       authclicked:1
@@ -389,7 +413,7 @@ Page({
     if(mygroup.viceauth!=viceauth){
       this.setData({substatus:1})
       wx.request({
-        url: 'https://st.titordong.cn/Change_A',
+        url: app.globalData.serverurl+'Change_A',
         data:{
           operator:1,
           type:1,
@@ -423,7 +447,7 @@ Page({
         statuslist[i+1].authlist[j].clicked ? auth+='1' : auth+='0'
       if(auth!=divisionlist[i].auth){
         wx.request({
-          url: 'https://st.titordong.cn/Change_A',
+          url: app.globalData.serverurl+'Change_A',
           data: {
             operator:1,
             type:0,
@@ -518,7 +542,7 @@ Page({
         success: (result) => {
           if(result.confirm){
             wx.request({
-              url: 'http://st.titordong.cn/Grow_Team',
+              url: app.globalData.serverurl+'Grow_Team',
               data: {
                 gid:mygroup.gid,
                 pid1:memberchosed.pid,
@@ -564,9 +588,9 @@ Page({
         result.eventChannel.emit('acceptdiv&mem',
         {
           divisionlist: this.data.divisionlist,
-          memberlist:this.data.memberlist,
-          useropenid:this.data.useropenid,
-          mygroup:this.data.mygroup
+          memberlist: this.data.memberlist,
+          useropenid: this.data.useropenid,
+          mygroup: this.data.mygroup
           })
       },
     })

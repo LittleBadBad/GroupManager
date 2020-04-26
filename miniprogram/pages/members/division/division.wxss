@@ -70,12 +70,12 @@ white-space:nowrap;  /*强制不换行*/
 .infocard{
   display: flex;
   align-items: center;
-  padding-left: 20rpx;
-  margin-bottom: 20rpx;
-  border-bottom:2rpx solid rgb(0,0,0,0.1);
-  border-top:2rpx solid rgb(0,0,0,0.1);
+  padding-left: 10px;
+  margin-bottom: 10px;
+  border-bottom:1px solid rgb(0,0,0,0.1);
+  border-top:1px solid rgb(0,0,0,0.1);
   background: white;
-  height: 100rpx;
+  height: 50px;
 }
 
 .authview{
@@ -99,8 +99,8 @@ white-space:nowrap;  /*强制不换行*/
 }
 
 .memberavatar{
-  margin-left: 10rpx;
-  width:75rpx;
-  height:75rpx;
+  margin-left: 5px;
+  width:38px;
+  height:38px;
   border-radius: 50%;
 }

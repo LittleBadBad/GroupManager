@@ -10,9 +10,8 @@ class="btncontainer" style="justify-content:center">选择换届成员（点击�
     hover-class="btclicked">招募部员</view>
 </view>
 <view class='memberscontainer'>
-  <view wx:for='{{divmember}}' data-index="{{index}}"
-    bindtap="{{changingterm ? 'slcMember':'clkDivMem'}}">
-    <view class="member" wx:if="{{item.division.joined}}"
+  <view wx:for='{{divmember}}' data-index="{{index}}" wx:key="pid" bindtap="{{changingterm ? 'slcMember':'clkDivMem'}}">
+    <view class="member" wx:if="{{item.division}}"
     style="{{item.clicked ? 'background:rgb(0,0,0,0.1)' : ''}}">
       <image class="memberavatar" src='{{item.avatar}}'></image>
         <view style="padding-left:20rpx">
@@ -44,8 +43,8 @@ class="btncontainer" style="justify-content:center">选择换届成员（点击�
           <picker wx:if="{{chgstatus}}"
           style="width:380rpx;display:flex" bindchange="bindStatusChange" value="{{i}}"
           range="{{statuslist}}">
-            <view>{{i!='null'? statuslist[i]:divmemchosed.division.status}}
-              <text wx:if="{{i=='null'}}" style="color:grey">点击选择</text>
+            <view>{{status ? status : divmemchosed.division.status}}
+              <text wx:if="{{!status}}" style="color:grey">点击选择</text>
             </view>
           </picker>
           <view wx:else>{{divmemchosed.division.status}}</view>
@@ -53,9 +52,9 @@ class="btncontainer" style="justify-content:center">选择换届成员（点击�
         <view class="infobar" style="height:260rpx">
           <view>部员权限：</view>
           <scroll-view scroll-y style="height:250rpx;width:330rpx;border:2rpx solid rgb(0,0,0,0.1)">
-            <view wx:for="{{authtype}}" wx:for-item="type" wx:for-index="i1">
+            <view wx:for="{{authtype}}" wx:for-item="type" wx:for-index="i1" wx:key="*this">
               <view wx:for="{{type.authlist}}" wx:for-index="i2"
-                wx:for-item="auth">
+              wx:key="*this" wx:for-item="auth">
                 <view wx:if="{{!auth.disable&&(divmemchosed.division.status=='部员'?!auth.memdisable : 1)}}" data-i1="{{i1}}" data-i2="{{i2}}"
                 class="infobar" hover-class="btclicked" bindtap="clkMemAuth"
                 style="margin-bottom:2rpx;font-size:28rpx;height:55rpx;background:{{auth.clicked ? 'rgb(0,0,0,0.1)' : ''}}"
@@ -76,10 +75,9 @@ class="btncontainer" style="justify-content:center">选择换届成员（点击�
     <view class="zan-dialog__container" 
       style="padding-left:30rpx;padding-right:30rpx;left:20rpx;height:700rpx">
       <view style="font-size:26rpx;margin-top:20rpx;text-align:center">选择成员</view>
-      <scroll-view scroll-y
-      style="height:500rpx;margin-top:20rpx;border:2rpx solid rgb(0,0,0,0.1)">
-        <view wx:for="{{groupmember}}" data-index="{{index}}" bindtap="selectMem">
-          <view class="member" wx:if="{{!item.division.joined&&item.status=='成员'}}"
+      <scroll-view scroll-y style="height:500rpx;margin-top:20rpx;border:2rpx solid rgb(0,0,0,0.1)">
+        <view wx:for="{{groupmember}}" data-index="{{index}}" bindtap="selectMem" wx:key="pid">
+          <view class="member" wx:if="{{!item.division&&item.status=='成员'}}"
             style="{{item.clicked ? 'background:rgb(0,0,0,0.1)':''}}">
             <image class="memberavatar" src='{{item.avatar}}'></image>
               <view style="padding-left:20rpx">
@@ -99,10 +97,10 @@ class="btncontainer" style="justify-content:center">选择换届成员（点击�
     <view class="zan-dialog__container authview">
       <form bindsubmit="authsubmit">
         <scroll-view scroll-y class="authcontainer">
-          <view wx:for="{{authtype}}" wx:for-index="i"><!--身份列表改为权限类型-->
+          <view wx:for="{{authtype}}" wx:for-index="i" wx:key="*this"><!--身份列表改为权限类型-->
             <view class="status" bindtap="clicktype" data-index="{{i}}">{{item.name}}</view>
-              <view wx:for="{{item.authlist}}" wx:for-index="j" wx:for-item="auth">
-                <view class="auth" data-index="{{j}}"
+              <view wx:for="{{item.authlist}}" wx:for-index="j" wx:for-item="auth" wx:key="*this">
+                <view class="auth" data-j="{{j}}" data-i="{{i}}"
 style="{{(item.clicked ? 'position:relative;top:0rpx;':'position: absolute;top:-'+88*j+'rpx;')+(auth.clicked ? 'background:rgb(0,0,0,0.1);':'')+(auth.disable ? 'color:grey':'')}}"
                 bindtap="clkAuthItm">{{auth.name}}</view>
               </view>

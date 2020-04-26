@@ -2,15 +2,13 @@
     <view class="page__hd">
         <view class="page__title">
             {{action.unit}} {{editing ? action2.name:action.name}}
-            <view class="logo" bindtap="addAction" wx:if="{{editing}}" id="name" bindtap="edit"
-            style="background-image: url('../../../images/edit.png');height:20px;width:20px" 
-            hover-class="hover"></view>
+            <image src="../../../images/edit.png" style="height:20px;width:20px"
+            class="logo" wx:if="{{editing}}" id="name" bindtap="edit" hover-class="hover"></image>
         </view>
-        <picker mode="date" class="page__desc" bindchange="alterDate">
+        <picker mode="date" class="page__desc" bindchange="{{editing ? 'alterDate':''}}">
             {{editing ? action2.date:action.date}}
-            <view class="logo" bindtap="addAction" wx:if="{{editing}}"
-            style="background-image: url('../../../images/edit.png');height:20px;width:20px" 
-            hover-class="hover"></view>
+            <image src="../../../images/edit.png" style="height:20px;width:20px"
+            class="logo" wx:if="{{editing}}" hover-class="hover"></image>
         </picker>
     </view>
     <view class="page__bd">
@@ -18,15 +16,15 @@
                 <view class="weui-article__section">
                     <view class="weui-article__h3">
                         参与人：{{editing ? action2.participats:action.participats}}
-                        <view class="logo" bindtap="addAction" wx:if="{{editing}}" bindtap="edit"
-                        style="background-image: url('../../../images/edit.png');height:20px;width:20px" id='participats'
-                        hover-class="hover"></view>
+                        <image src="../../../images/edit.png" style="height:20px;width:20px" 
+                        id='participats' class="logo" wx:if="{{editing}}" bindtap="edit"
+                        hover-class="hover"></image>
                     </view>
                     <view class="weui-article__p">
                         {{editing ? action2.intro:action.intro}}
-                        <view class="logo" bindtap="addAction" wx:if="{{editing}}" bindtap="edit"
-                        style="background-image: url('../../../images/edit.png');height:20px;width:20px" id="intro"
-                        hover-class="hover"></view>
+                        <image src="../../../images/edit.png" style="height:20px;width:20px" 
+                        id='participats' class="logo" wx:if="{{editing}}" id="intro" bindtap="edit"
+                        hover-class="hover"></image>
                     </view>
                     <view class="weui-uploader__files" id="uploaderFiles">
                         <view wx:if="{{action.imglist.length==0}}">尚未添加活动图片</view>
@@ -50,9 +48,9 @@
     </view>
 </view>
     <view class="buttonbar">
-        <button type="warn" bindtap="{{editing ? 'cancelEdit':'deleteAction'}}">
+        <button type="warn" catchtap="{{editing ? 'cancelEdit':'deleteAction'}}">
         {{editing ? '取消':'删除'}}</button>
-        <button bindtap="{{editing ? 'submitAlter':'editAction'}}"
+        <button catchtap="{{editing ? 'submitAlter':'editAction'}}"
         >{{editing ? '提交':'编辑'}}</button>
     </view>
 
@@ -83,7 +81,7 @@
                         <view catchtap="cancelChoose" data-index="{{index}}"
                         style="margin-left:20rpx;margin-bottom:10rpx;" 
                         class='nameblock'>{{item}}
-                        <icon style="margin-right:5px" size="13" type="clear" catchtap="cancelChoose">
+                        <icon style="margin-right:5px" size="13" type="clear" bindtap="cancelChoose">
                         </icon>
                         </view>
                     </block>
@@ -115,8 +113,9 @@
   <view class="weui-mask" bindtap="toggleIntro" />
     <view class="weui-dialog__wrp" bindtap="toggleIntro" >
         <view class="weui-dialog" catchtap="stopEvent">
-            <view class="weui-dialog__bd" style="padding:2px 2px 0px">
-                <textarea placeholder="输入活动简介" bindinput="inputIntro" value="{{action2.intro}}"></textarea>
+            <view class="weui-dialog__bd">
+                <input placeholder="输入活动简介" bindinput="inputIntro" value="{{action2.intro}}">
+                </input>
                 <view class="weui-dialog__title" style="color:grey">编辑活动简介</view>
             </view>
             <view class="weui-dialog__ft">

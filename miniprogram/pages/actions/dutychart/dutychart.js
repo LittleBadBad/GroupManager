@@ -1,66 +1,51 @@
 // pages/actions/dutychart/dutychart.js
+var app=getApp()
 Page({
 
     /**
      * 页面的初始数据
      */
     data: {
+        useropenid:'',
+        duty:'',
+        memberlist:'',
 
+        chart:''
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-
+        var that=this
+        const eventChannel = this.getOpenerEventChannel()
+        eventChannel.on('getData',function(data){
+            var duty=data.duty
+            var dutychart=duty.chart
+            var pidlist=data.memberlist
+            var chart=[]
+            var n=0
+            for(let i in duty.sln.timelist.start){
+                chart[i]=[]
+                for(let j in duty.date){
+                    chart[i][j]={}
+                    //console.log(j)
+                    chart[i][j].pidlist=dutychart[n++].split(",")
+                    chart[i][j].namelist=[]
+                    for(let i2 in chart[i][j].pidlist)
+                        for(let j2 in pidlist)
+                            if(pidlist[j2].pid==chart[i][j].pidlist[i2])
+                                chart[i][j].namelist[i2]=pidlist[j2].name
+                }
+            }
+            console.log(chart)
+            that.setData({
+                useropenid:data.useropenid,
+                duty:data.duty,
+                memberlist:pidlist,
+                chart:chart
+            })
+        })
     },
 
-    /**
-     * 生命周期函数--监听页面初次渲染完成
-     */
-    onReady: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面卸载
-     */
-    onUnload: function () {
-
-    },
-
-    /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
-    onPullDownRefresh: function () {
-
-    },
-
-    /**
-     * 页面上拉触底事件的处理函数
-     */
-    onReachBottom: function () {
-
-    },
-
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage: function () {
-
-    }
 })

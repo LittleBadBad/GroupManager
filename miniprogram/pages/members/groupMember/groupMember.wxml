@@ -19,7 +19,7 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
 
 <!--成员列表-->
 <scroll-view scroll-y class='memberscontainer'>
-  <view wx:for='{{memberlist}}' data-index="{{index}}" bindtap="{{changingterm ? 'slctMember':'clickmember'}}">
+  <view wx:for='{{memberlist}}' data-index="{{index}}" bindtap="{{changingterm ? 'slctMember':'clickmember'}}" wx:key="pid">
     <view wx:if="{{!item.removed}}"
       class="member" style="{{item.clicked ? 'background:rgb(0,0,0,0.1)':''}}">
       <image class="memberavatar" src='{{item.avatar}}'></image>
@@ -34,7 +34,7 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
 <!--部门列表-->
 <scroll-view scroll-y class="divcontainer">
     <view wx:if="{{!user_divlist}}">{{memberlist[0].statusdiv}}</view>
-    <view wx:for="{{user_divlist}}" data-index="{{index}}" bindtap="toMyDiv">
+    <view wx:for="{{user_divlist}}" data-index="{{index}}" bindtap="toMyDiv" wx:key="id">
         <view class="division" hover-class="division-hover">
             <view class="divtext" style="height:80rpx;font-size:30rpx;">{{item.name}}</view>
             <view class="divtext" style="height:120rpx;font-size:24rpx;color:grey">{{item.intro}}</view>
@@ -59,10 +59,8 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
         <view class="infobar">联系方式：{{}}</view>
         <view class="infobar">
           <view>社团身份：</view>
-          <picker wx:if="{{showpicker}}"
-          style="width:380rpx" bindchange="bindStatusChange"
-          bindtap="bindStatusTap" value="{{i}}"
-          range="{{statuslist}}">
+          <picker wx:if="{{showpicker}}" range="{{statuslist}}"
+          style="width:380rpx" bindchange="bindStatusChange" value="{{i}}">
             <view wx:if="{{i}}">{{statuslist[i]}}</view>
             <view wx:else>{{memberchosed.status}}<text style="color:grey">   点击选择</text></view>
           </picker>
@@ -81,9 +79,9 @@ class="buttoncontainer" style="justify-content:center">选择换届成员（点�
     <view class="zan-dialog__container authview">
       <form bindsubmit="authsubmit">
         <scroll-view scroll-y class="authcontainer">
-          <view wx:for="{{statuslist}}" wx:for-index="i"><!--index用i表示--><!--e.blabla.index=i-->
+          <view wx:for="{{statuslist}}" wx:for-index="i" wx:key="*this">
             <view class="status" bindtap="clickstatus" data-index="{{i}}">{{item.name}}</view>
-              <view wx:for="{{item.authlist}}" wx:for-index="j" wx:for-item="auth">
+              <view wx:for="{{item.authlist}}" wx:for-index="j" wx:for-item="auth" wx:key="*this">
                 <view class="auth" data-index="{{j}}"
                 style="{{(item.clicked ? 'position:relative;top:0rpx;':'position: absolute;top:-'+88*j+'rpx;')+(auth.clicked ? 'background:rgb(0,0,0,0.1);':'')}}"
                 bindtap="clkAuthItm">{{auth.name}}</view>

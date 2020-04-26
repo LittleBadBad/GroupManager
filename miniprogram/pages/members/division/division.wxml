@@ -1,6 +1,6 @@
 <scroll-view scroll-y class="divcontainer">
   <view wx:if="{{!divisionlist}}">暂无部门</view>
-  <view wx:for="{{divisionlist}}" data-index="{{index}}" bindtap="clickDiv">
+  <view wx:for="{{divisionlist}}" data-index="{{index}}" bindtap="clickDiv" wx:key="id">
     <view class="division" hover-class="division-hover" wx:if="{{!item.deleted}}">
       <view class="divtext" style="font-size:30rpx;">{{item.name}}</view>
       <view class="divtext" style="font-size:24rpx;color:grey">{{item.intro}}</view>
@@ -41,7 +41,7 @@
         </view>
         <view class="infocard" style="height:300rpx">权限：
           <scroll-view scroll-y class="authview">
-            <view wx:for="{{authlist}}" wx:for-index="index">
+            <view wx:for="{{authlist}}" wx:for-index="index" wx:key="*this">
               <view class="infocard" hover-class="auth-hover" bindtap="clickAuth"
               style="margin-bottom:0;font-size:28rpx;height:55rpx;background:{{item.clicked ? 'rgb(0,0,0,0.1)' : ''}}"
               data-index="{{index}}"
@@ -68,10 +68,10 @@
           <scroll-view scroll-y
           style="margin-top:30rpx;height:350rpx;background:rgb(0,0,0,0.1);border:2rpx solid rgb(0,0,0,0.3)">
             <view wx:if="{{!divmember}}">该部门尚无部员</view>
-            <view wx:for="{{divmember}}">
+            <view wx:for="{{divmember}}" wx:key="pid">
               <view class="member">
                 <image class="memberavatar" src='{{item.avatar}}'></image>
-                <view style="font-size:25rpx;padding-left:10rpx">
+                <view style="font-size:13px;padding-left:5px">
                   <view style="margin auto auto">{{item.name}}</view>
                   <view style="margin auto auto">{{item.division.status}}</view>
                 </view>

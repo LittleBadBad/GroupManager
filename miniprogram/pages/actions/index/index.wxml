@@ -1,53 +1,53 @@
 <view class="main">
-  <view class="head">
-    <view style="height:65%"></view>
-    <view style="display:flex;justify-content:flex-end;padding-right:20rpx">
-      <view style="height:80rpx;width:150rpx;">社团活动</view>
-      <view style="height:80rpx;width:80rpx;">
-        <view class="logo" bindtap="addAction"
-        style="background-image: url('../../../images/add.png');" hover-class="hover"></view>
-      </view>
+    <view class="head">
+        <view style="height:65%"></view>
+        <view style="display:flex;justify-content:flex-end;padding-right:20rpx">
+            <view style="height:80rpx;width:150rpx;">社团活动</view>
+            <view style="height:80rpx;width:80rpx;">
+                <image class="logo" bindtap="addAction" wx:if="{{showaddaction}}"
+                src="../../../images/add.png" hover-class="hover"></image>
+            </view>
+        </view>
     </view>
-  </view>
-  <scroll-view scroll-y class="body">
-    <view wx:for="{{actionlist}}">
-      <view class="weui-media-box weui-media-box_appmsg" bindtap="actionDetail" data-item="{{item}}"
-      hover-class="weui-cell_active" style="background:white">
-        <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-          <image class="weui-media-box__thumb" src="{{item.imglist[0] ? item.imglist[0]:'../../../images/2.jpg'}}" />
+    <scroll-view scroll-y class="body">
+        <view wx:for="{{actionlist}}" wx:key="aid">
+            <view class="weui-media-box weui-media-box_appmsg" bindtap="actionDetail" data-item="{{item}}"
+            hover-class="weui-cell_active" style="background:white">
+                <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                    <image class="weui-media-box__thumb" src="{{item.imglist[0] ? item.imglist[0]:'../../../images/2.jpg'}}" />
+                </view>
+                <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                <view class="weui-media-box__title">{{item.unit}} {{item.name}}
+                    <text style="font-size:12px"> {{item.date}}</text>
+                </view>
+                <view class="weui-media-box__desc" style="font-size:10px">{{item.participats}}</view>
+                <view class="weui-media-box__desc">{{item.intro}}</view>
+                </view>
+            </view>
         </view>
-        <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-        <view class="weui-media-box__title">{{item.unit}} {{item.name}}
-          <text style="font-size:12px"> {{item.date}}</text>
-        </view>
-        <view class="weui-media-box__desc" style="font-size:10px">{{item.participats}}</view>
-        <view class="weui-media-box__desc">{{item.intro}}</view>
-        </view>
-      </view>
-    </view>
-  </scroll-view>
+    </scroll-view>
 </view>
 
 <view class="main">
-  <view class="head" style="height:20%">
-    <view style="height:45%"></view>
-    <view style="display:flex;justify-content:flex-end;padding-right:20rpx">
-      <view style="height:80rpx;width:150rpx;">值班活动</view>
-      <view style="height:80rpx;width:80rpx;">
-        <view class="logo" bindtap="addDuty"
-        style="background-image: url('../../../images/add.png');" hover-class="hover"></view>
-      </view>
+    <view class="head" style="height:20%">
+        <view style="height:45%"></view>
+        <view style="display:flex;justify-content:flex-end;padding-right:20rpx">
+            <view style="height:80rpx;width:150rpx;">值班活动</view>
+            <view style="height:80rpx;width:80rpx;">
+                <image class="logo" bindtap="addDuty" wx:if="{{showaddduty}}"                src='../../../images/add.png' hover-class="hover"></image>
+            </view>
+        </view>
     </view>
-  </view>
-  <scroll-view scroll-y class="body">
-    <view class="weui-media-box weui-media-box_text" style="background:white"
-     data-index="{{index}}" bindtap="toDuty" wx:for="{{dutylist}}">
-      <view class="weui-media-box__title weui-media-box__title_in-text">
-        {{item.unit+' '+item.sln.name}}<text style="color:rgba(0,0,0,.5);font-size:14px;">    {{item.status == 1 ? '已发布，点击参与' : '进行中，点击查看'}}</text><icon style="margin-right:5px" size="13" type="clear" data-index="{{index}}" catchtap="deleteSln"/>
-      </view>
-      <view class="weui-media-box__desc">
-        <view>日期：{{item.date}}</view>
-      </view>
-    </view>
-  </scroll-view>
+    <scroll-view scroll-y class="body">
+        <view data-index="{{index}}" bindtap="toDuty" wx:for="{{dutylist}}" wx:key="duid">
+            <view wx:if="{{item.status}}" class="weui-media-box weui-media-box_text" style="background:white">
+                <view class="weui-media-box__title weui-media-box__title_in-text">
+                    {{item.unit+' '+item.sln.name}}<text style="color:rgba(0,0,0,.5);font-size:14px;">  {{item.status==1 ? '已发布，点击参与' : '进行中，点击查看'}}</text><icon style="margin-right:5px" size="13" type="clear" data-index="{{index}}" catchtap="deleteDuty"/>
+                </view>
+                <view class="weui-media-box__desc">
+                    <view>日期：{{item.date}}</view>
+                </view>
+            </view>
+        </view>
+    </scroll-view>
 </view>

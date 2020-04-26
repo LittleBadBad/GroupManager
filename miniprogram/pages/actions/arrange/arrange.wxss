@@ -1,1 +1,50 @@
-/* pages/actions/arrange/arrange.wxss */
+.buttonbar{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+  }
+button{
+    display: inline-block;
+    width: 180px;
+  }
+
+.member{
+    padding: 5px 10px;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+    background: white;
+  }
+  
+  .memberinfo{
+    display:flex;
+    align-items: center;
+  }
+
+  .memberavatar{
+    width:38px;
+    height:38px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+.notlike{
+    background: yellow;
+    }
+.like{
+    background: yellowgreen;
+}
+.colorblock{
+  height:80%;
+  width:80%;
+  display:flex;
+  justify-content:center;
+  align-items: center;
+}
+.nameblock{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:12px
+}

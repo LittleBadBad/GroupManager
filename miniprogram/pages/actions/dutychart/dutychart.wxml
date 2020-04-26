@@ -1,2 +1,39 @@
-<!--pages/actions/dutychart/dutychart.wxml-->
-<text>pages/actions/dutychart/dutychart.wxml</text>
+<view class="page__hd">{{duty.unit+' '+duty.sln.name}}</view>
+<view class="page__bd">
+    <view class="table">
+        <view class="tr bg-w">
+            <view class="th"></view>
+            <block wx:for="{{duty.date}}" wx:key="*this">
+                <view class="th" style="font-size:12px">{{item}}</view>
+            </block>
+        </view>
+        <block wx:for="{{duty.sln.timelist.start}}" wx:for-index="i" wx:for-item="item1" wx:key="*this">
+            <view class="tr bg-g" wx:if="{{i % 2 == 0}}">
+                <view class="td">{{item1}}-{{duty.sln.timelist.end[i]}}</view>
+                <block wx:for="{{duty.date}}" wx:for-index="j" wx:for-item="item2" wx:key="*this">
+                    <view class="td" data-index="{{i}}" data-item="{{j}}">
+                        <view wx:for="{{chart[i][j].namelist}}" wx:for-item="item3"
+                        style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px" wx:key="*this">
+                            <view hover-class="namehover">
+                                {{item3}}
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </view>
+            <view class="tr" wx:else>
+                <view class="td">{{item1}}-{{duty.sln.timelist.end[i]}}</view>
+                <block wx:for="{{duty.date}}" wx:for-index="j" wx:for-item="item2" wx:key="*this">
+                    <view class="td">
+                        <view wx:for="{{chart[i][j].namelist}}" wx:for-item="item3"
+                         style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px" wx:key="*this">
+                            <view hover-class="namehover">
+                                {{item3}}
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </view>
+        </block>
+    </view>
+</view>
