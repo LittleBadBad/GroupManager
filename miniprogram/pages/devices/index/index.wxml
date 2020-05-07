@@ -1,0 +1,46 @@
+
+<view class="weui-cells__title" style="text-align:right;">
+    <text style="border-bottom:1px solid gray">通知</text>
+</view>
+        <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__hd" style="padding:0">
+                <view class="weui-cell">
+                    <view class="weui-cell__bd">社团设备列表8</view>
+                    <view class="weui-cell__ft">
+                        <image class="logo" bindtap="addDuty" src='../../../images/add.png' hover-class="hover"></image>
+                    </view>
+                </view>
+            </view>
+            <view class="weui-panel__bd">
+                <view wx:for="{{devicelist}}">
+                <view class="weui-slideview">
+                    <view class="weui-media-box weui-media-box_appmsg"
+                    style="transform:translateX({{item.translate}}px);transition: all 0.2s ease;"
+                    bindtap="tapdevice" bindtouchstart="touchS" data-i="{{index}}"
+                    bindtouchmove="touchM" bindtouchend="touchE" 
+                    hover-class="weui-cell_active">
+                        <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                            <image class="weui-media-box__thumb" src="{{item.imglist[0]}}" />
+                        </view>
+                        <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                            <view class="weui-media-box__title">
+                                {{item.type+'    '+(item.validnum-item.usingnum)+'/'+item.validnum}}
+                            </view>
+                            <view class="weui-media-box__desc">{{'藏匿地点：'+item.place}}</view>
+                            <view class="weui-media-box__desc">{{'备注：'+item.note}}</view>
+                        </view>
+                    </view>
+                    <view class="weui-slideview__right" style="width:150px;height:100%;background:green;transform:translateX({{item.translate}}px);transition: all 0.2s ease;">
+                        <view class="weui-slideview__buttons">
+                            <view class="btn" style="background:#c7c7cc">
+                                借用
+                            </view>
+                            <view class="btn" style="background:#fe3b30">
+                                删除
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                </view>
+            </view>
+        </view>

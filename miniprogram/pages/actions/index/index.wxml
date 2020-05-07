@@ -2,8 +2,8 @@
     <view class="head">
         <view style="height:65%"></view>
         <view style="display:flex;justify-content:flex-end;padding-right:20rpx">
-            <view style="height:80rpx;width:150rpx;">社团活动</view>
-            <view style="height:80rpx;width:80rpx;">
+            <view style="height:40px;width:150rpx;">社团活动</view>
+            <view style="height:40px;width:80rpx;">
                 <image class="logo" bindtap="addAction" wx:if="{{showaddaction}}"
                 src="../../../images/add.png" hover-class="hover"></image>
             </view>
@@ -32,8 +32,8 @@
     <view class="head" style="height:20%">
         <view style="height:45%"></view>
         <view style="display:flex;justify-content:flex-end;padding-right:20rpx">
-            <view style="height:80rpx;width:150rpx;">值班活动</view>
-            <view style="height:80rpx;width:80rpx;">
+            <view style="height:40px;width:150rpx;">值班活动</view>
+            <view style="height:40px;width:80rpx;">
                 <image class="logo" bindtap="addDuty" wx:if="{{showaddduty}}"                src='../../../images/add.png' hover-class="hover"></image>
             </view>
         </view>

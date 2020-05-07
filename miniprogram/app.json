@@ -13,6 +13,9 @@
     "pages/actions/arrange/arrange",
     "pages/actions/addaction/addaction",
     "pages/actions/addduty/addduty",
+    "pages/devices/index/index",
+    "pages/devices/adddevice/adddevice",
+    "pages/devices/device/device",
     "pages/me/me",
     "pages/info/info",
     "pages/myinfo/myinfo"
@@ -28,7 +31,7 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "我的群",
+        "text": "社团",
         "iconPath": "../miniprogram/images/icon-index.jpg",
         "selectedIconPath": "../miniprogram/images/icon-index-selected.jpg"
       },

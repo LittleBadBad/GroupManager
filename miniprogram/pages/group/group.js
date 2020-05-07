@@ -172,6 +172,21 @@ Page({
     })
   },
 
+  toDevices(){
+    wx.navigateTo({
+      url: '../devices/index/index',
+      complete: (res) => {},
+      fail: (res) => {},
+      success: (result) => {
+        result.eventChannel.emit('getData',{
+          memberlist:this.data.memberlist,
+          pid:this.data.userOpenid,
+          group:this.data.mygroup,
+        })
+      },
+    })
+  },
+
   //前往活动界面
   toActions(){
     wx.navigateTo({

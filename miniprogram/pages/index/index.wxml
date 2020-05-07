@@ -1,34 +1,39 @@
 <!--index.wxml-->
-<view class="container">
+<view class="page">
 
   <!--按钮-->
   <view class="buttoncontainer">
-    <button class='groupbutton1' bindtap="groupSearch" disabled="{{!signed}}">社团查找</button>
-    <button class='groupbutton2' bindtap='groupCreate' disabled="{{!signed}}">创建社团</button>
+    <image class="logo" bindtap="groupCreate" src="../../images/add.png" hover-class="hover"></image><text style="color:gray">创建社团</text>
+  </view>
+  <view class="weui-search-bar">
+    <view class="weui-search-bar__form"> 
+      <view class="weui-search-bar__box">
+        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+        <input disabled class="weui-search-bar__input" placeholder="社团查找" bindtap="groupSearch" />
+      </view>
+    </view>
   </view>
 
   <!--社团列表-->
-  <scroll-view scroll-y="true" class="groupcontainer">
+  <view class="groupcontainer">
   <view wx:if="{{!grouplist.length}}" style="display:flex;justify-content:center;">
     尚未添加任何社团
   </view>
-  <view wx:for="{{grouplist}}" wx:key="gid" data-index='{{index}}' wx:key="gid" bindtap='toMyGroup'>
+  <view wx:for="{{grouplist}}" data-index='{{index}}' wx:key="gid" bindtap='toMyGroup'>
     <view wx:if="{{!item.dismissed}}" class="groupinfo" hover-class="groupinfo-hover">
-      <view 
-          class="userinfo-avatar"
-          style="background-image: url({{item.avatarstatus==1 ? item.avatarcache :(item.avatarstatus ? '../../../../images/loadfail.jpg':'../../images/loading.gif')}})"
-      >
+      <view>
+        <view class="groupinfo-avatar"
+            style="background-image: url({{item.avatarstatus==1 ? item.avatarcache :(item.avatarstatus ? '../../../../images/loadfail.jpg':'../../images/loading.gif')}})"
+        ></view>
       </view>
-        <view>
-            <view class="line1">
-                <view class="groupname">{{item.name}}</view>
-                <view class="gnum" wx:if='{{item.num}}'>{{item.num}}人</view>
-            </view>
-              <view class="groupsum">{{item.intro}}</view>
-        </view>
+      <view class="line1">
+        <view class="groupname">{{item.name}}</view>
+        <view class="gnum" wx:if='{{item.num}}'>{{item.num}}人</view>
       </view>
+      <view class="groupsum">{{item.intro}}</view>
+  </view>
     </view>
-  </scroll-view>
+  </view>
 </view>
 
 <!--弹窗 = 隐藏在页面底部300%处不触发就不显示，触发后弹出原位置距离，并使背景色变为透明暗灰色-->
@@ -39,8 +44,8 @@
   <!--弹窗内容-->
     <view>
         <!--搜索框-->
-        <view class="weui-search-bar">
-                <view class="weui-search-bar__form">
+        <view class="weui-search-bar" style="margin-top:5px">
+              <view class="weui-search-bar__form">
                     <view class="weui-search-bar__box">
                         <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
                         <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
@@ -58,23 +63,18 @@
         <!--搜索信息-->
         <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
             <scroll-view scroll-y class='groupsearchcontainer'>
-            <!--wx:for-index="i"规定索引值；{{i}}-->
                 <view wx:for="{{grouplistsearch}}" wx:for-index="i" wx:key="gid">
-                  <view class="groupinfo">
-                      <view 
-                        open-type="getUserInfo" 
-                        bindgetuserinfo="onGetUserInfo"
-                        class="userinfo-avatar"
-                        style="background-image: url({{item.avatar}})">
+                  <view class="weui-cell" hover-class="weui-cell_active" style="height:55px">
+                      <view class="groupinfo-avatar" style="background-image: url({{item.avatar}})">
                       </view>
-                      <view>
+                      <view style="width:45%;padding:0 5px">
                         <view class="groupname">{{item.gname}}</view>
-                        <view class="groupsum">{{item.intro}}</view>
+                        <view class="groupsum" style="text-align:left">{{item.intro}}</view>
                       </view>
-                      <button wx:if="{{!item.joined}}" size="mini"
-                      style="font-size:24rpx" 
+                      <button wx:if="{{!item.joined}}" size="mini" disabled="{{!signed}}"
+                      style="font-size:12px" 
                       bindtap="joinReq" data-i="{{i}}">申请加入</button>
-                      <button wx:else size="mini" style="font-size:24rpx" disabled>已加入</button>
+                      <button wx:else size="mini" style="font-size:12px" disabled>已加入</button>
                   </view>
                 </view>
             </scroll-view>

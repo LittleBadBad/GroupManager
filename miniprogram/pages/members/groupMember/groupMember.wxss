@@ -64,37 +64,6 @@ page{
   align-items: center;
 }
 
-/*悬浮窗CSS*/
-.zan-dialog__mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-  background: rgba(0, 0, 0, 0);
-  background: rgba(0, 0, 0, 0.4);
-  display: none;
-}
-.zan-dialog__container {
-  position: fixed;
-  bottom: 400rpx;
-  width: 650rpx;
-  height: 600rpx;
-  left: 50rpx;
-  background: #f6f6f6;
-  transform: translateY(300%);/*不点击时在300%处隐藏，点击后0处出现*/
-  transition: all 0.4s ease;/*出现和消失均用时0.4s*/
-  z-index: 12;
-  border-radius: 20rpx;
-  box-shadow: 0px 3px 3px 2px gainsboro;
-}
-.zan-dialog--show .zan-dialog__container {
-  transform: translateY(0);
-}
-.zan-dialog--show .zan-dialog__mask {
-  display: block;
-}
 
 /*成员信息弹窗*/
 .remove-block{

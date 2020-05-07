@@ -80,6 +80,12 @@
 					"pathName": "pages/actions/addduty/addduty",
 					"query": "",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/devices/index/index",
+					"pathName": "pages/devices/index/index",
+					"scene": null
 				}
 			]
 		}

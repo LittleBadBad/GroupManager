@@ -2281,16 +2281,16 @@ page {
   
   .zan-dialog__container {
 	position: fixed;
-	bottom: 200px;
+	top: 100px;
 	width: 650rpx;
 	min-height: 300px;
-	left: 25px;
-	background: #f8f8f8;
-	transform: translateY(300%);/*不点击时在300%处隐藏，点击后0处出现*/
+	left:7%;
+	background: #f6f6f6;
+	transform: translateY(200%);/*不点击时在300%处隐藏，点击后0处出现*/
 	transition: all 0.4s ease;/*出现和消失均用时0.4s*/
 	z-index: 12;
 	border-radius: 10px;
-	box-shadow: 0px 3px 3px 2px gainsboro;
+	/* box-shadow: 0px 3px 3px 2px gainsboro; */
   }
   .zan-dialog--show .zan-dialog__container {
 	transform: translateY(0);
