@@ -8,7 +8,10 @@ Page({
     authdialog:0,
     userOpenid:'',
     groupavatar:'../../images/2.jpg',
+    
     grouplistsearch:[],
+    inputVal:'',
+
     grouplist: [],
 
     canvasImg:'',
@@ -90,7 +93,8 @@ toggleAuth(){
 
   toggleSearch(){
     this.setData({
-      tapsearch:0
+      tapsearch:0,
+      inputVal:''
     })
   },
 
@@ -190,7 +194,8 @@ joinReq(e){
 //群创建模块
 groupCreate(){
   this.setData({
-    tapcreate:1
+    groupavatar:'../../images/2.jpg',
+    tapcreate:1,
   })
 },
 

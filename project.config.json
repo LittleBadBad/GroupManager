@@ -85,6 +85,13 @@
 					"id": -1,
 					"name": "pages/devices/index/index",
 					"pathName": "pages/devices/index/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/devices/adddevice/adddevice",
+					"pathName": "pages/devices/adddevice/adddevice",
 					"scene": null
 				}
 			]

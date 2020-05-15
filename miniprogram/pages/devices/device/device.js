@@ -5,7 +5,17 @@ Page({
      * 页面的初始数据
      */
     data: {
-
+        device:
+        {
+            deid:"huvhjv",
+            location:"uyfyugyu",
+            type:"话筒",
+            note:"只能唱歌不能吃",
+            validnum:"5",
+            place:"一组团三号楼207",
+            usingnum:"4",
+            imglist:["../../../images/1.jpg","../../../images/2.jpg"]
+        },
     },
 
     /**
