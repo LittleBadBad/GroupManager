@@ -7,7 +7,10 @@ Page({
 
     authdialog:0,
     userOpenid:'',
-    groupavatar:'../../images/2.jpg',
+    groupavatar:'',
+    gname:'',
+    gintro:'',
+    fund:'',
     
     grouplistsearch:[],
     inputVal:'',
@@ -87,14 +90,14 @@ toggleAuth(){
   //群搜索模块
   groupSearch(){
     this.setData({
-      tapsearch:1
+      tapsearch:1,
+      inputVal:''
     })
   },
 
   toggleSearch(){
     this.setData({
       tapsearch:0,
-      inputVal:''
     })
   },
 
@@ -112,7 +115,7 @@ toggleAuth(){
   },
   clearInput: function () {
     this.setData({
-        inputVal: ""
+        inputVal: ''
     });
   },
 
@@ -175,15 +178,13 @@ joinReq(e){
         complete: (res) => {},
         fail: (res) => {},
         success: res => {
-          grouplist[i].avatarcache=res.tempFilePath
-          grouplist[i].avatarstatus=1
+          this.login(userOpenid)
           wx.showToast({
             title: '加入成功',
             icon:'success'
           })
           this.setData({
             tapsearch: 0,
-            grouplist:grouplist
           })
         },
       })
@@ -194,7 +195,10 @@ joinReq(e){
 //群创建模块
 groupCreate(){
   this.setData({
-    groupavatar:'../../images/2.jpg',
+    groupavatar:'',
+    gname:'',
+    gintro:'',
+    fund:'',
     tapcreate:1,
   })
 },
@@ -229,87 +233,144 @@ doUpload: function () {
 
 //提交群信息
 subGroup(e){
-console.log(e)
+//console.log(e)
 var userOpenid=this.data.userOpenid
 var gname=e.detail.value.gname
 var gintro=e.detail.value.gintro
 var fund=e.detail.value.fund
 var groupavatar=this.data.groupavatar
-var grouplist=this.data.grouplist
+// var grouplist=this.data.grouplist
 var time = formatTime(new Date())
-wx.showLoading({
-  title: '提交社团信息',
-  mask: true,
-})
-wx.request({
-  url: app.globalData.serverurl+'CrtTeam',
-  data:{
-    pid:userOpenid,
-    gname:gname,
-    regtime:time,
-    intro:gintro,
-    fund:fund
-  },
-  complete: (res) => {wx.hideLoading()},
-  fail: (res) => {},
-  success:result=> {
+console.log(groupavatar)
+if(!groupavatar)
+  wx.showModal({
+    complete: (res) => {},
+    confirmColor: 'grey',
+    confirmText: '确定',
+    content: '至少上传一张群头像',
+    fail: (res) => {},
+    showCancel: false,
+    success: (result) => {},
+  })
+  else if(!gname)
+    wx.showModal({
+      complete: (res) => {},
+      confirmColor: 'grey',
+      confirmText: '确定',
+      content: '请填写社团名',
+      fail: (res) => {},
+      showCancel: false,
+      success: (result) => {},
+    })
+  else{
     wx.showLoading({
-      title: '上传社团头像',
+      title: '提交社团信息中',
       mask: true,
     })
-    var gid=result.data.gid
-    //上传群头像
-    wx.uploadFile({
-      filePath: groupavatar,
-      name: 'cover',
-      url: app.globalData.serverurl+'update_team_avatar',
+    wx.request({
+      url: app.globalData.serverurl+'CrtTeam',
+      data:{
+        pid:userOpenid,
+        gname:gname,
+        regtime:time,
+        intro:gintro,
+        fund:fund
+      },
       complete: (res) => {wx.hideLoading()},
       fail: (res) => {},
-      formData: {
-        gid:gid,
-      },
-      header: {
-        'content-type': 'multipart/form-data'
-      },
       success:result=> {
-        console.log('uploadresult',result)
         wx.showLoading({
-          title: '同步中',
+          title: '上传社团头像',
           mask: true,
         })
-        //创建成功后刷新界面
-        var groupnew={}
-        groupnew.name=e.detail.value.gname
-        groupnew.avatarUrl=result.data.url
-        groupnew.avatarcache=groupavatar
-        groupnew.avatarstatus=1
-        groupnew.intro=e.detail.value.gintro
-        groupnew.status='主席'
-        groupnew.num=1
-        groupnew.auth='1111111'
-        groupnew.gid=gid
-        grouplist=grouplist.concat(groupnew)
-        this.setData({
-          tapcreate:0,
-          grouplist:grouplist
-        })
-        wx.hideLoading()
-        wx.showToast({
-          title: '创建成功',
-          duration: 2000,
-          mask: true,
+        var gid=result.data.gid
+        //上传群头像
+        wx.uploadFile({
+          filePath: groupavatar,
+          name: 'cover',
+          url: app.globalData.serverurl+'update_team_avatar',
+          complete: (res) => {wx.hideLoading()},
+          fail: (res) => {},
+          formData: {
+            gid:gid,
+          },
+          header: {
+            'content-type': 'multipart/form-data'
+          },
+          success:result=> {
+            console.log('uploadresult',result)
+            wx.showLoading({
+              title: '同步中',
+              mask: true,
+            })
+            // 创建成功后刷新界面
+            this.setData({
+              tapcreate:0,
+              // grouplist:grouplist
+            })
+            this.login(userOpenid)
+            wx.hideLoading()
+            wx.showToast({
+              title: '创建成功',
+              duration: 2000,
+              mask: true,
+            })
+          },
         })
       },
     })
-  },
-})
+  }
+
+},
+
+quit(e){
+  var i=e.currentTarget.dataset.index
+  var grouplist=this.data.grouplist
+  var pid=this.data.userOpenid
+  if(grouplist[i].status!='主席')
+  wx.showModal({
+    cancelColor: 'grey',
+    cancelText: '我再想想',
+    complete: (res) => {},
+    confirmColor: 'red',
+    confirmText: '确定',
+    content: '确认退出？',
+    fail: (res) => {},
+    showCancel: true,
+    success: (result) => {
+      if(result.confirm)
+        wx.request({
+          url: app.globalData.serverurl+'GRemove',
+          complete: (res) => {},
+          data: {
+            gid:grouplist[i].gid,
+            pid:pid
+          },
+          fail: (res) => {},
+          success: (result) => {
+            this.login(pid)
+            wx.showToast({
+              title: '退出成功',
+              complete: (res) => {},
+              duration: 2000,
+              fail: (res) => {},
+              success: (res) => {},
+            })
+          },
+        })
+    },
+  })
+
 },
 
 //自定义函数
 login(pid){
     //登录请求
     wx.request({
-      url: app.globalData.serverurl+'Login?pid='+pid,
+      url: app.globalData.serverurl+'Login',
+      data:{
+        pid:pid
+      },
       complete:res=>{wx.hideLoading()},
       fail:res=>{
         wx.showToast({
@@ -345,11 +406,32 @@ login(pid){
               grouplistold[i]={avatarcache:'',}
           }
           var that=this//0.3秒后执行setData
-          setTimeout(function(){that.setData({grouplist:grouplist})},300+20*grouplist.length)
+          setTimeout(function(){
+            // console.log(grouplist)
+            that.setData({grouplist:grouplist})
+          },100+20*grouplist.length)
           for (let i in grouplist) {//下载群头像
             var starttime=new Date().getTime()
-            if(!grouplistold[i].avatarcache||grouplistold[i].avatarUrl!=grouplist[i].avatarUrl){//若没有缓存或头像已更改则下载
+            var pass=0
+            //需要下载的情况：
+            //1. 社团在grouplist中不在old中；
+            //2. 在old中但avatarcache不存在；
+            //3. 存在avatarcache但avatarUrl已更改
+            for(let j in grouplistold)//
+              if(grouplistold[j].gid==grouplist[i].gid){
+                pass=1
+                if(grouplistold[j].avatarcache)
+                  if(grouplist[i].avatarUrl==grouplistold[j].avatarUrl)
+                    grouplist[i].avatarcache=grouplistold[j].avatarcache
+                  else
+                    pass=0
+                else
+                  pass=0
+                break
+              }
+            if(!pass){//若没有缓存或头像已更改则下载
               console.log('下载中')
+              console.log(grouplist[i])
               wx.downloadFile({
                 url: grouplist[i].avatar,
                 complete: (res) => {},
@@ -361,22 +443,19 @@ login(pid){
                   })
                 },
                 success: (result) => {
-                  console.log('已完成',i)
+                  //console.log('已完成',i)
                   var endtime=new Date().getTime()
                   var time=(endtime-starttime)/1000
                   grouplist[i].avatarstatus=1//加载完成
                   grouplist[i].avatarcache=result.tempFilePath
-                  if(time > 0.3)//若加载时间大于0.3秒则重新setData
+                  if(time > 0.1)//若加载时间大于0.3秒则重新setData
                     this.setData({
                       grouplist:grouplist
                     })
                 },
               })
-            }
-            else{
-              grouplist[i].avatarcache=grouplistold[i].avatarcache
+            }else
               grouplist[i].avatarstatus=1
-            }
           }
           wx.hideLoading()
       }else{

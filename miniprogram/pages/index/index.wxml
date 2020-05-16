@@ -1,11 +1,12 @@
 <!--index.wxml-->
 <view class="page">
-
   <!--按钮-->
-  <view class="buttoncontainer">
-    <image class="logo" bindtap="groupCreate" src="../../images/add.png" hover-class="hover"></image><text style="color:gray">创建社团</text>
+  <view style="position:fixed;width:100%;background:#f6f6f6;z-index:10;">
+    <view class="buttoncontainer">
+      <image class="logo" bindtap="groupCreate" src="../../images/add.png" hover-class="hover"></image><text style="color:gray">创建社团</text>
+    </view>
   </view>
-  <view class="weui-search-bar">
+  <view class="weui-search-bar" style="margin-top:25px;z-index:2">
     <view class="weui-search-bar__form"> 
       <view class="weui-search-bar__box">
         <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
@@ -19,7 +20,7 @@
   <view wx:if="{{!grouplist.length}}" style="display:flex;justify-content:center;">
     尚未添加任何社团
   </view>
-  <view wx:for="{{grouplist}}" data-index='{{index}}' wx:key="gid" bindtap='toMyGroup'>
+  <view wx:for="{{grouplist}}" data-index='{{index}}' wx:key="gid" bindtap='toMyGroup' bindlongtap="quit">
     <view wx:if="{{!item.dismissed}}" class="groupinfo" hover-class="groupinfo-hover">
       <view>
         <view class="groupinfo-avatar"
@@ -88,7 +89,7 @@
   <view class="zan-dialog__mask" bindtap="toggleCreate" />
   <view class="zan-dialog__container">
       <form bindsubmit='subGroup'>
-            <image class="img" src='{{groupavatar}}'/>
+            <image class="img" src="{{groupavatar? groupavatar:'../../images/2.jpg'}}"/>
             <view
              style="display:flex;justify-content:center;margin:10rpx auto;width:200rpx;color:grey;font-size:30rpx"
              hover-class="uploadgroup"
@@ -96,15 +97,15 @@
           <!--单输入行-->
             <view class="inputline">
               <view>社团名：</view>
-              <input name='gname'></input>
+              <input name='gname' value="{{gname}}"></input>
             </view>
             <view class="inputline">
               <view>简介：</view>
-              <input name='gintro'></input>
+              <input name='gintro' value="{{gname}}"></input>
             </view>
             <view class="inputline">
-              <view>资金：</view>
-              <input type="number" name='fund'></input>
+              <view>资金/元：</view>
+              <input type="number" name='fund' value="{{fund}}"></input>
             </view>
             <button form-type="submit">提交</button>
         </form>
